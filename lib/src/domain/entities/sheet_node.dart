@@ -6,9 +6,6 @@
 //  structure? Maybe that's the responsibility of usecases.)
 
 class SheetNode {
-  // List<int> solutions = <int>[1,2,3,4,5,6,7,8,9];
   late List<int> solutions;
-  SheetNode([List<int> solutions = const <int>[1,2,3,4,5,6,7,8,9]]) {
-    this.solutions = solutions;
-  }
+  SheetNode([this.solutions = const <int>[1,2,3,4,5,6,7,8,9]]);
 }
