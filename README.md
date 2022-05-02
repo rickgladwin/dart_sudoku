@@ -1,1 +1,4 @@
-A simple command-line application.
+# Dart Sudoku
+
+## A simple command-line Dart application for solving Sudoku puzzles.
+
