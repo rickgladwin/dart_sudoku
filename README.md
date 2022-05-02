@@ -1,2 +1,1 @@
-# dart_sudoku
-Sudoku solver built in Dart and Flutter
+A simple command-line application.
