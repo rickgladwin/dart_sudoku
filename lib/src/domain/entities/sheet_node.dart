@@ -6,6 +6,8 @@
 //  structure? Maybe that's the responsibility of usecases.)
 
 class SheetNode {
-  late List<int> solutions;
-  SheetNode([this.solutions = const <int>[1,2,3,4,5,6,7,8,9]]);
+  late Set<int> solutions;
+  SheetNode([this.solutions = const <int>{1,2,3,4,5,6,7,8,9}]);
 }
+
+// TODO: change the data type of solutions to Set<int>

@@ -9,7 +9,7 @@ class SheetNodeHandler {
 
   SheetNodeHandler(this.sheetNode);
 
-  void updateSolutions(List<int> newSolutions) {
+  void updateSolutions(Set<int> newSolutions) {
     var validationResult = validateNewSolutions(newSolutions);
     if (validationResult.status == true) {
       sheetNode.solutions = newSolutions;
@@ -18,7 +18,7 @@ class SheetNodeHandler {
     }
   }
 
-  ValidationResult validateNewSolutions(List<int> newSolutions) {
+  ValidationResult validateNewSolutions(Set<int> newSolutions) {
     var validationResult = ValidationResult(status: true);
 
     // new solutions cannot contain an invalid integer
