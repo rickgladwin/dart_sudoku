@@ -13,8 +13,6 @@ import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 
 class Sheet {
   late List<List<SheetNode>> rows;
-  // TODO: make columns a getter
-  // late List<SheetNode> columns;
   get columns {
     return getColumns();
   }
@@ -56,9 +54,11 @@ class SheetInitializer {
   //  new list of lists of SheetNodes (rows, rotated 90º)
   // List<SheetNode> columns;
 
-  SheetInitializer({List<List<SheetNode>>? rowData}) {
+  SheetInitializer({List<List<SheetNode?>>? rowData}) {
     if (rowData == null) {
       initializeDefaultSheet();
+    } else {
+      initializeSheetWithData(rowData);
     }
   }
 
@@ -67,6 +67,19 @@ class SheetInitializer {
       rows.add([]);
       for (var j = 0; j < 9; j++) {
         rows[i].add(SheetNode());
+      }
+    }
+  }
+
+  void initializeSheetWithData(rowData) {
+    for (var i = 0; i < 9; i++) {
+      rows.add([]);
+      for (var j = 0; j < 9; j++) {
+        if (rowData[i][j].runtimeType != SheetNode) {
+          rows[i].add(SheetNode());
+          continue;
+        }
+        rows[i].add(rowData[i][j]);
       }
     }
   }
