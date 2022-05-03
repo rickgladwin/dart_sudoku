@@ -18,6 +18,10 @@ class SheetNodeHandler {
     }
   }
 
+  bool isSolved() {
+    return sheetNode.solutions.length == 1;
+  }
+
   ValidationResult validateNewSolutions(Set<int> newSolutions) {
     var validationResult = ValidationResult(status: true);
 
@@ -46,10 +50,6 @@ class SheetNodeHandler {
     if (sheetNode.solutions.contains(solution)) {
       sheetNode.solutions.remove(solution);
     }
-  }
-
-  bool isSolved() {
-    return sheetNode.solutions.length == 1;
   }
 }
 
