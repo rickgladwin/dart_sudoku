@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Sheet', () {
-    group('initializes with a 9x9 grid of SheetNodes', () {
+    group('Initializes with a 9x9 grid of SheetNodes', () {
       test('initializes with 9 rows', () {
         var sheetInitializer = SheetInitializer();
         var sheet = Sheet(sheetInitializer);
@@ -35,7 +35,7 @@ void main() {
 
     });
 
-    group('is indexable by row and column to the SheetNode level', () {
+    group('Is indexable by row and column to the SheetNode level', () {
       test('is indexable by row', () {
         var sheetInitializer = initializeFromPartialData(); // puts {6} at row 3, col 5
         var sheet = Sheet(sheetInitializer);
