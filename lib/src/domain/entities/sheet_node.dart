@@ -9,5 +9,3 @@ class SheetNode {
   late Set<int> solutions;
   SheetNode([this.solutions = const <int>{1,2,3,4,5,6,7,8,9}]);
 }
-
-// TODO: change the data type of solutions to Set<int>
