@@ -7,13 +7,16 @@ import 'package:ansi_escapes/ansi_escapes.dart';
 //   static final
 // }
 
+
+
 void printSheetNode(SheetNode sheetNode) {
   printBlankSheetNode();
-  sleep(Duration(seconds:2));
+  sleep(Duration(seconds:3));
   stdout.write(ansiEscapes.curserTo(0, 0));
   // var nodeIndex = 1;
   // final Set solutions = sheetNode.solutions;
   for (var i = 1; i <= 9; i++) {
+    sleep(Duration(seconds:1));
     // TODO: delete (overwrite) any existing character? Or change cursor to
     //  overwrite mode?
     // TODO: cursor right first? Depends on where cursor is placed.
@@ -44,4 +47,9 @@ void printBlankSheetNode() {
     }
     stdout.write('\n');
   }
+}
+
+void main() {
+  var sheetNode = SheetNode();
+  printSheetNode(sheetNode);
 }
