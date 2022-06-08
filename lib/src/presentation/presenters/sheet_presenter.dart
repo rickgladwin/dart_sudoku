@@ -44,7 +44,7 @@ void printSheet(Sheet sheet) {
   printSheetBorders();
   stdout.write('\n');
   // print top border
-  stdout.write('${Char.tl2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.tr2}\n');
+  // stdout.write('${Char.tl2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.tr2}\n');
   stdout.write('\n');
   // var topLeftNode = sheet.rows[0][0];
 
@@ -139,15 +139,7 @@ void printSheetBorders() {
       }
       stdout.write(rightVert);
     }
-
-    // node rows
-
-
-
-    // dummy (dot) rows
-    // for (var col = 0; col < 37; col++) {
-    //   stdout.write('.');
-    // }
+    // the \n character makes stdout print its buffer and then a new line
     stdout.write('\n');
   }
   
