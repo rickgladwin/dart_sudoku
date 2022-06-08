@@ -11,9 +11,7 @@ import 'package:ansi_escapes/ansi_escapes.dart';
 
 void printSheetNode(SheetNode sheetNode) {
   // printBlankSheetNode();
-  printFourBlankSheetNodes();
   sleep(Duration(seconds:2));
-  stdout.write(ansiEscapes.curserTo(0, 0));
   // var nodeIndex = 1;
   // final Set solutions = sheetNode.solutions;
   for (var i = 1; i <= 9; i++) {
@@ -28,6 +26,7 @@ void printSheetNode(SheetNode sheetNode) {
       stdout.write('•');
     }
     if (i % 3 == 0) {
+      // FIXME: replace cursorNextLine with "down" OR "curserTo"
       stdout.write(ansiEscapes.cursorNextLine);
       stdout.write(ansiEscapes.cursorLeft);
       stdout.write(ansiEscapes.cursorLeft);
@@ -64,5 +63,9 @@ void printFourBlankSheetNodes() {
 
 void main() {
   var sheetNode = SheetNode();
+  printFourBlankSheetNodes();
+  stdout.write(ansiEscapes.curserTo(0, 0));
+  printSheetNode(sheetNode);
+  stdout.write(ansiEscapes.curserTo(3, 0));
   printSheetNode(sheetNode);
 }
