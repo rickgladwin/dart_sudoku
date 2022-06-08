@@ -9,6 +9,7 @@ import 'package:ansi_escapes/ansi_escapes.dart';
 
 void printSheetNode(SheetNode sheetNode) {
   printBlankSheetNode();
+  sleep(Duration(seconds:2));
   stdout.write(ansiEscapes.curserTo(0, 0));
   // var nodeIndex = 1;
   // final Set solutions = sheetNode.solutions;
