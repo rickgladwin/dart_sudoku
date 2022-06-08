@@ -10,13 +10,14 @@ import 'package:ansi_escapes/ansi_escapes.dart';
 
 
 void printSheetNode(SheetNode sheetNode) {
-  printBlankSheetNode();
-  sleep(Duration(seconds:3));
+  // printBlankSheetNode();
+  printFourBlankSheetNodes();
+  sleep(Duration(seconds:2));
   stdout.write(ansiEscapes.curserTo(0, 0));
   // var nodeIndex = 1;
   // final Set solutions = sheetNode.solutions;
   for (var i = 1; i <= 9; i++) {
-    sleep(Duration(seconds:1));
+    sleep(Duration(milliseconds:200));
     // TODO: delete (overwrite) any existing character? Or change cursor to
     //  overwrite mode?
     // TODO: cursor right first? Depends on where cursor is placed.
@@ -34,7 +35,7 @@ void printSheetNode(SheetNode sheetNode) {
     // ++nodeIndex;
   }
   // TODO: find a way to write buffer without printing newline
-  stdout.write('\n');
+  stdout.write('\n\n\n');
 }
 
 void printBlankSheetNode() {
@@ -43,6 +44,18 @@ void printBlankSheetNode() {
   for(var i = 1; i <= 3; i++) {
     // cols
     for (var j = 1; j <= 3; j++) {
+      stdout.write('#');
+    }
+    stdout.write('\n');
+  }
+}
+
+void printFourBlankSheetNodes() {
+  stdout.write(ansiEscapes.clearScreen);
+  // rows
+  for(var i = 1; i <= 6; i++) {
+    // cols
+    for (var j = 1; j <= 6; j++) {
       stdout.write('#');
     }
     stdout.write('\n');
