@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
+import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
+import 'package:ansi_escapes/ansi_escapes.dart';
 
 class Char {
   // grid elements
@@ -37,18 +39,89 @@ String presentSheet(Sheet sheet) {
   return 'sheet';
 }
 
-void printSheet() {
-  stdout.write('printing sheet');
-  const int charCode = 2560;
-  stdout.writeCharCode(charCode);
-  print('printing!!!');
-  print(Char.r2h1);
-  print(Char.r2h1);
-  print(Char.r2h1);
-  stdout.write('thing1');
-  stdout.writeln('thing');
-  stdout.done;
+void printSheet(Sheet sheet) {
+  // printSheetCanvas();
+  printSheetBorders();
+  stdout.write('\n');
+  // print top border
+  stdout.write('${Char.tl2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.tr2}\n');
+  stdout.write('\n');
+  var topLeftNode = sheet.rows[0][0];
+
+  stdout.write(sheet.rows[0][0].solutions);
+  stdout.write('\n');
   print('terminal rows: ${stdout.terminalLines}');
   print('terminal columns: ${stdout.terminalColumns}');
+  print(sheet);
   print('done');
+}
+
+void printSheetCanvas() {
+  stdout.write(ansiEscapes.clearScreen);
+  for (var i = 0; i < 37; i++) {
+    for (var j = 0; j < 37; j++) {
+      stdout.write('.');
+    }
+    stdout.write('\n');
+  }
+
+  stdout.write(ansiEscapes.curserTo(0, 0));
+  stdout.write(ansiEscapes.cursorMove(3, 5));
+  stdout.write('\$');
+
+  // TODO: use ansiEscapes (https://pub.dev/packages/ansi_escapes) to control
+  //  cursor position for printing node solutions, lines, etc.
+  //
+}
+
+void printSheetBorders() {
+  stdout.write(ansiEscapes.clearScreen);
+  // print top border
+  stdout.write('${Char.tl2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.tr2}\n');
+
+  // print rows
+  for (var row = 1; row < 36; row++) {
+    // line rows
+    if (isLineRow(row)) {
+
+    }
+
+    // node rows
+
+
+
+    // dummy (dot) rows
+    for (var col = 0; col < 37; col++) {
+      stdout.write('.');
+    }
+    stdout.write('\n');
+  }
+  
+  // print bottom border
+  stdout.write('${Char.bl2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.br2}\n');
+}
+
+bool isLineRow(int row) {
+  // total rows (within top and bottom borders):  37
+  // line row indices (rows are 1-indexed): 4, 8, 12, 16, 20, 24, 28, 32, 36
+  return row % 4 == 0;
+}
+
+bool isSectorBorderRow(int row) {
+  // every 12th row (every 3rd border row) is a sector border
+  // print('$row % 12 = ${row % 12}');
+  return row % 12 == 0;
+}
+
+void printSheetNode(SheetNode sheetNode, String leftChar, String rightChar) {
+  var solutionIndex = 1;
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+      if (sheetNode.solutions.contains(solutionIndex)) {
+        stdout.write(solutionIndex);
+      } else {
+        stdout.write(' ');
+      }
+    }
+  }
 }
