@@ -24,6 +24,18 @@ void main() {
         expect(isLineRow(43), false);
       });
     }),
+    group('isLineCol', () {
+      test('identifies every 4th col as a line col', () {
+        expect(isLineCol(4), true);
+        expect(isLineCol(16), true);
+        expect(isLineCol(40), true);
+      });
+      test('identifies non-4th rows as a non-line rows', () {
+        expect(isLineCol(5), false);
+        expect(isLineCol(17), false);
+        expect(isLineCol(43), false);
+      });
+    }),
     group('isSectorBorderRow', () {
       test('identifies every 12th row as a sector border row', () {
         expect(isSectorBorderRow(12), true);
@@ -34,6 +46,18 @@ void main() {
         expect(isSectorBorderRow(4), false);
         expect(isSectorBorderRow(13), false);
         expect(isSectorBorderRow(32), false);
+      });
+    }),
+    group('isSectorBorderCol', () {
+      test('identifies every 12th col as a sector border col', () {
+        expect(isSectorBorderCol(12), true);
+        expect(isLineCol(24), true);
+        expect(isSectorBorderCol(36), true);
+      });
+      test('identifies non-12th cols as a non-sector border cols', () {
+        expect(isSectorBorderCol(4), false);
+        expect(isSectorBorderCol(13), false);
+        expect(isSectorBorderCol(32), false);
       });
     }),
     group('CLI', () {
