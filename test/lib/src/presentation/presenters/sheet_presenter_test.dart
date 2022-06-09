@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 
 
 // known good default sheet presenter output
-// TODO: build using characters in src/config
+// TODO: build known good
 
 void main() {
   group('SheetPresenter:', () => {
@@ -62,14 +62,11 @@ void main() {
     }),
     group('CLI', () {
       test('presents a default sheet', () {
-        // const char = Char.tl2;
-        // stdout.write('\nchar:');
-        // stdout.write(char);
         var sheetInitializer = SheetInitializer();
         var sheet = Sheet(sheetInitializer);
 
         printSheet(sheet);
-      });
+      }, skip: 'create "known good" printed sheet checker');
     })
   });
 }

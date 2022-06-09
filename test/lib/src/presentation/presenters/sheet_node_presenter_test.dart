@@ -6,7 +6,7 @@ void main() {
   group('SheetNodePresenter', () {
     test('presents a default SheetNode', () {
       var sheetNode = SheetNode();
-      printSheetNode(sheetNode);
-    });
+      printSheetNode(sheetNode: sheetNode, x: 0, y: 0);
+    }, skip: 'create "known good" printed sheet node checker');
   });
 }

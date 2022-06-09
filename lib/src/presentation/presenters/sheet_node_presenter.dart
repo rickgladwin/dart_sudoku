@@ -8,7 +8,7 @@ void printSheetNode({required SheetNode sheetNode, required int x, required int 
   // sleep(Duration(milliseconds:10));
   int nodeRow = y;
   for (var i = 1; i <= 9; i++) {
-    sleep(Duration(milliseconds:5));
+    sleep(Duration(milliseconds:1));
     if (sheetNode.solutions.contains(i)) {
       stdout.write(i);
     } else {
