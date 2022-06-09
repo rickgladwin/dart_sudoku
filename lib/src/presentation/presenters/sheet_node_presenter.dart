@@ -5,10 +5,10 @@ import 'package:ansi_escapes/ansi_escapes.dart';
 
 void printSheetNode({required SheetNode sheetNode, required int x, required int y}) {
   stdout.write(ansiEscapes.curserTo(x, y));
-  sleep(Duration(milliseconds:10));
+  // sleep(Duration(milliseconds:10));
   int nodeRow = y;
   for (var i = 1; i <= 9; i++) {
-    sleep(Duration(milliseconds:10));
+    sleep(Duration(milliseconds:5));
     if (sheetNode.solutions.contains(i)) {
       stdout.write(i);
     } else {
@@ -26,20 +26,6 @@ void printSheetNode({required SheetNode sheetNode, required int x, required int 
 void printCoords(x, y) {
   stdout.write(ansiEscapes.curserTo(0,0));
   stdout.write('x: $x, y: $y');
-}
-
-void printBlankSheetNode() {
-
-  stdout.write(ansiEscapes.clearScreen);
-  stdout.write('\n');
-  // rows
-  for(var i = 1; i <= 3; i++) {
-    // cols
-    for (var j = 1; j <= 3; j++) {
-      stdout.write('#');
-    }
-    stdout.write('\n');
-  }
 }
 
 void printBlankSheetNodes({required int xNodes, required int yNodes}) {
@@ -62,8 +48,4 @@ void main() {
       printSheetNode(sheetNode: sheetNode, x: j, y: i);
     }
   }
-  // printSheetNode(sheetNode: sheetNode, x: 0, y: 0);
-  // printSheetNode(sheetNode: sheetNode, x: 3, y: 0);
-  // printSheetNode(sheetNode: sheetNode, x: 0, y: 3);
-  // printSheetNode(sheetNode: sheetNode, x: 3, y: 3);
 }
