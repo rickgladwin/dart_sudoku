@@ -9,36 +9,37 @@ import 'package:ansi_escapes/ansi_escapes.dart';
 
 
 
-void printSheetNode(SheetNode sheetNode) {
-  // printBlankSheetNode();
-  sleep(Duration(seconds:2));
-  // var nodeIndex = 1;
-  // final Set solutions = sheetNode.solutions;
+void printSheetNode({required SheetNode sheetNode, required int x, required int y}) {
+  stdout.write(ansiEscapes.curserTo(x, y));
+  sleep(Duration(seconds:1));
+  int nodeRow = y;
   for (var i = 1; i <= 9; i++) {
-    sleep(Duration(milliseconds:200));
-    // TODO: delete (overwrite) any existing character? Or change cursor to
-    //  overwrite mode?
-    // TODO: cursor right first? Depends on where cursor is placed.
-    // stdout.write('\u232B');
+    sleep(Duration(milliseconds:100));
     if (sheetNode.solutions.contains(i)) {
       stdout.write(i);
     } else {
       stdout.write('•');
     }
     if (i % 3 == 0) {
-      // FIXME: replace cursorNextLine with "down" OR "curserTo"
-      stdout.write(ansiEscapes.cursorNextLine);
-      stdout.write(ansiEscapes.cursorLeft);
-      stdout.write(ansiEscapes.cursorLeft);
+      ++nodeRow;
+      stdout.write(ansiEscapes.curserTo(x, nodeRow));
     }
-    // ++nodeIndex;
   }
   // TODO: find a way to write buffer without printing newline
   stdout.write('\n\n\n');
 }
 
+void printCoords(x, y) {
+  // var cursorPosition = ansiEscapes.cursorGetPosition;
+  stdout.write(ansiEscapes.curserTo(0,0));
+  stdout.write('x: $x, y: $y');
+  // stdout.write(ansiEscapes.curserTo(cursorPosition.x, cursorPosition.y))
+}
+
 void printBlankSheetNode() {
+
   stdout.write(ansiEscapes.clearScreen);
+  stdout.write('\n');
   // rows
   for(var i = 1; i <= 3; i++) {
     // cols
@@ -64,8 +65,8 @@ void printFourBlankSheetNodes() {
 void main() {
   var sheetNode = SheetNode();
   printFourBlankSheetNodes();
-  stdout.write(ansiEscapes.curserTo(0, 0));
-  printSheetNode(sheetNode);
-  stdout.write(ansiEscapes.curserTo(3, 0));
-  printSheetNode(sheetNode);
+  printSheetNode(sheetNode: sheetNode, x: 0, y: 0);
+  printSheetNode(sheetNode: sheetNode, x: 3, y: 0);
+  printSheetNode(sheetNode: sheetNode, x: 0, y: 3);
+  printSheetNode(sheetNode: sheetNode, x: 3, y: 3);
 }
