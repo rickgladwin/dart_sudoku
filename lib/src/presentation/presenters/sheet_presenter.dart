@@ -33,13 +33,101 @@ class Char {
   static const reset = '\u001b[0m';
 }
 
+class SheetPresenter {
+  late final StringBuffer canvas;
 
+  SheetPresenter([StringBuffer? canvas]) {
+    this.canvas = canvas ?? StringBuffer();
+  }
 
-String presentSheet(Sheet sheet) {
-  return 'sheet';
+  void writeSheetBorders() {
+    // TODO: clear buffer here?
+    canvas.write(ansiEscapes.clearScreen);
+    // print top border
+    canvas.write('${Char.tl2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.tr2}\n');
+
+    // print rows
+    for (var row = 1; row < 36; row++) {
+
+      late final String leftVert;
+      late final String rightVert;
+      late final String horizLine;
+      late final String horizNodeCross;
+      late final String horizSectorCross;
+
+      // line rows
+      if (isLineRow(row)) {
+        // sector divider rows characters
+        if (isSectorBorderRow(row)) {
+          leftVert = Char.l2h2;
+          rightVert = Char.r2h2;
+          horizLine = Char.h2;
+          horizNodeCross = Char.c2v1;
+          horizSectorCross = Char.c2;
+        // node divider rows characters
+        } else {
+          leftVert = Char.l2h1;
+          rightVert = Char.r2h1;
+          horizLine = Char.h1;
+          horizNodeCross = Char.c1;
+          horizSectorCross = Char.c2h1;
+        }
+        // print line row
+        canvas.write(leftVert);
+        for (var col = 1; col < 36; col++) {
+          isSectorBorderCol(col) ?
+          canvas.write(horizSectorCross) :
+          isLineCol(col) ?
+          canvas.write(horizNodeCross) :
+          canvas.write(horizLine);
+        }
+        canvas.write(rightVert);
+      // non-line rows
+      } else {
+        leftVert = Char.v2;
+        rightVert = Char.v2;
+        late String vertLine;
+
+        canvas.write(leftVert);
+        // line columns
+        for (var col = 1; col < 36; col++) {
+          if (isLineCol(col)) {
+            if (isSectorBorderCol(col)) {
+              vertLine = Char.v2;
+            } else {
+              vertLine = Char.v1;
+            }
+          } else {
+            vertLine = '•';
+          }
+          canvas.write(vertLine);
+        }
+        canvas.write(rightVert);
+      }
+      canvas.write('\n');
+    }
+
+    // print bottom border
+    canvas.write('${Char.bl2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.br2}\n');
+  }
+
+  void writeSheet(Sheet sheet) {
+    writeSheetBorders();
+    var sheetNodePresenter = SheetNodePresenter(canvas);
+
+    // for each SheetNode in Sheet, print the SheetNode on the canvas
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+        sheetNodePresenter.writeSheetNode(sheetNode: sheet.rows[i][j], x: j*3+j+1, y: i*3+i+1);
+      }
+    }
+  }
+
+  void printCanvas () => print(canvas);
+
 }
 
-void printSheet(Sheet sheet) {
+void writeSheet(Sheet sheet) {
   printSheetBorders();
   var sheetNodePresenter = SheetNodePresenter();
 
@@ -161,6 +249,14 @@ bool isSectorBorderCol(int col) {
 void main() {
   var sheetInitializer = SheetInitializer();
   var sheet = Sheet(sheetInitializer);
+  var canvas = StringBuffer();
 
-  printSheet(sheet);
+  var sheetPresenter = SheetPresenter(canvas);
+
+  sheetPresenter.writeSheet(sheet);
+  sheetPresenter.printCanvas();
+
+  print('\ncodeUnits:\n');
+
+  print(sheetPresenter.canvas.toString().codeUnits);
 }

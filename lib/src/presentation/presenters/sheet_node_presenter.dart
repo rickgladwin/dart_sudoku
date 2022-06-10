@@ -39,9 +39,7 @@ class SheetNodePresenter {
     }
   }
 
-  void printCanvas() {
-    print(canvas);
-  }
+  void printCanvas () => print(canvas);
 
 }
 
@@ -53,10 +51,11 @@ void printCoords(x, y) {
 void main() {
   var sheetNode = SheetNode();
   var sheetNodePresenter = SheetNodePresenter();
-  sheetNodePresenter.printBlankSheetNodes(xNodes: 3, yNodes: 3);
+  sheetNodePresenter.printBlankSheetNodes(xNodes: 1, yNodes: 1);
   sheetNodePresenter.writeSheetNode(sheetNode: sheetNode, x: 0, y: 0);
   sheetNodePresenter.printCanvas();
-  print('\n\n\n\n\n');
+  print('\ncodeUnits:\n');
+  print(sheetNodePresenter.canvas.toString().codeUnits);
   // sleep(Duration(seconds: 1));
   // print('\n***\n');
   // stdout.writeln(sheetNodePresenter.canvas.toString().runes);
