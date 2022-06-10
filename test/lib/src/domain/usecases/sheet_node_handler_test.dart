@@ -14,7 +14,7 @@ void main() {
       expect(sheetNode.solutions, equals(fewerSolutions));
     });
 
-    test('cannot update with more solutions', () {
+    test('can NOT update with more solutions', () {
       var sheetNode = SheetNode({1,2,3,4,5,6,7});
       var sheetNodeHandler = SheetNodeHandler(sheetNode);
       const Set<int> moreSolutions = {1,3,6,7,8}; // 8 has been added

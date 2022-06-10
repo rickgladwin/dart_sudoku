@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
-import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:ansi_escapes/ansi_escapes.dart';
 import 'package:dart_sudoku/src/presentation/presenters/sheet_node_presenter.dart';
 
@@ -41,47 +40,25 @@ String presentSheet(Sheet sheet) {
 }
 
 void printSheet(Sheet sheet) {
-  // printSheetCanvas();
   printSheetBorders();
-  // stdout.write('\n');
-  // print top border
-  // stdout.write('${Char.tl2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.tr2}\n');
-  stdout.write('\n');
-  // var topLeftNode = sheet.rows[0][0];
 
   // for each SheetNode in Sheet, print the SheetNode on the canvas
-  var sheetNode = SheetNode();
-  // printBlankSheetNodes(xNodes: 9, yNodes: 9);
   for (var i = 0; i < 9; i++) {
     for (var j = 0; j < 9; j++) {
       printSheetNode(sheetNode: sheet.rows[i][j], x: j*3+j+1, y: i*3+i+1);
     }
   }
 
+  printCanvasInfo(sheet);
+}
+
+void printCanvasInfo(sheet) {
   stdout.write(sheet.rows[0][0].solutions);
   stdout.write('\n');
   print('terminal rows: ${stdout.terminalLines}');
   print('terminal columns: ${stdout.terminalColumns}');
   print(sheet);
   print('done');
-}
-
-void printSheetCanvas() {
-  stdout.write(ansiEscapes.clearScreen);
-  for (var i = 0; i < 37; i++) {
-    for (var j = 0; j < 37; j++) {
-      stdout.write('.');
-    }
-    stdout.write('\n');
-  }
-
-  stdout.write(ansiEscapes.curserTo(0, 0));
-  stdout.write(ansiEscapes.cursorMove(3, 5));
-  stdout.write('\$');
-
-  // TODO: use ansiEscapes (https://pub.dev/packages/ansi_escapes) to control
-  //  cursor position for printing node solutions, lines, etc.
-  //
 }
 
 void printSheetBorders() {
@@ -179,18 +156,6 @@ bool isSectorBorderCol(int col) {
   return col % 12 == 0;
 }
 
-// void printSheetNode(SheetNode sheetNode, String leftChar, String rightChar) {
-//   var solutionIndex = 1;
-//   for (var i = 0; i < 3; i++) {
-//     for (var j = 0; j < 3; j++) {
-//       if (sheetNode.solutions.contains(solutionIndex)) {
-//         stdout.write(solutionIndex);
-//       } else {
-//         stdout.write(' ');
-//       }
-//     }
-//   }
-// }
 
 void main() {
   var sheetInitializer = SheetInitializer();
