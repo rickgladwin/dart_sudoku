@@ -41,11 +41,12 @@ String presentSheet(Sheet sheet) {
 
 void printSheet(Sheet sheet) {
   printSheetBorders();
+  var sheetNodePresenter = SheetNodePresenter();
 
   // for each SheetNode in Sheet, print the SheetNode on the canvas
   for (var i = 0; i < 9; i++) {
     for (var j = 0; j < 9; j++) {
-      printSheetNode(sheetNode: sheet.rows[i][j], x: j*3+j+1, y: i*3+i+1);
+      sheetNodePresenter.writeSheetNode(sheetNode: sheet.rows[i][j], x: j*3+j+1, y: i*3+i+1);
     }
   }
 

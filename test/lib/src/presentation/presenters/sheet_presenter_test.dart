@@ -9,6 +9,12 @@ import 'package:test/test.dart';
 
 // known good default sheet presenter output
 // TODO: build known good
+class KnownGood {
+  // 123
+  // 456
+  // 789
+  static const defaultSheet = [27, 91, 49, 59, 49, 72, 49, 50, 51, 27, 91, 50, 59, 49, 72, 52, 53, 54, 27, 91, 51, 59, 49, 72, 55, 56, 57, 27, 91, 52, 59, 49, 72];
+}
 
 void main() {
   group('SheetPresenter:', () => {

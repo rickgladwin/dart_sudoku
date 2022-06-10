@@ -10,13 +10,11 @@ class SheetNodePresenter {
     this.canvas = canvas ?? StringBuffer();
   }
 
-  void printSheetNode({required SheetNode sheetNode, required int x, required int y}) {
-    // var canvas = StringBuffer();
+  void writeSheetNode({required SheetNode sheetNode, required int x, required int y}) {
     canvas.write(ansiEscapes.curserTo(x, y));
-    // sleep(Duration(milliseconds:10));
     int nodeRow = y;
     for (var i = 1; i <= 9; i++) {
-      sleep(Duration(milliseconds:1));
+      // sleep(Duration(milliseconds:1));
       if (sheetNode.solutions.contains(i)) {
         canvas.write(i);
       } else {
@@ -27,7 +25,6 @@ class SheetNodePresenter {
         canvas.write(ansiEscapes.curserTo(x, nodeRow));
       }
     }
-    print(canvas);
   }
 
   void printBlankSheetNodes({required int xNodes, required int yNodes}) {
@@ -40,91 +37,38 @@ class SheetNodePresenter {
       }
       canvas.write('\n');
     }
+  }
+
+  void printCanvas() {
     print(canvas);
   }
 
 }
-
-void printSheetNode({required SheetNode sheetNode, required int x, required int y}) {
-  stdout.write(ansiEscapes.curserTo(x, y));
-  // sleep(Duration(milliseconds:10));
-  int nodeRow = y;
-  for (var i = 1; i <= 9; i++) {
-    sleep(Duration(milliseconds:1));
-    if (sheetNode.solutions.contains(i)) {
-      stdout.write(i);
-    } else {
-      stdout.write('•');
-    }
-    if (i % 3 == 0) {
-      ++nodeRow;
-      stdout.write(ansiEscapes.curserTo(x, nodeRow));
-    }
-  }
-  stdout.write('\n\n\n');
-}
-
-void printSheetNodeWithBuffer({required SheetNode sheetNode, required int x, required int y}) {
-  var canvas = StringBuffer();
-  canvas.write(ansiEscapes.curserTo(x, y));
-  // sleep(Duration(milliseconds:10));
-  int nodeRow = y;
-  for (var i = 1; i <= 9; i++) {
-    sleep(Duration(milliseconds:1));
-    if (sheetNode.solutions.contains(i)) {
-      canvas.write(i);
-    } else {
-      canvas.write('•');
-    }
-    if (i % 3 == 0) {
-      ++nodeRow;
-      canvas.write(ansiEscapes.curserTo(x, nodeRow));
-    }
-  }
-  print(canvas);
-}
-
 
 void printCoords(x, y) {
   stdout.write(ansiEscapes.curserTo(0,0));
   stdout.write('x: $x, y: $y');
 }
 
-void printBlankSheetNodes({required int xNodes, required int yNodes}) {
-  stdout.write(ansiEscapes.clearScreen);
-  // rows
-  for(var i = 1; i <= (3 * yNodes); i++) {
-    // cols
-    for (var j = 1; j <= (3 * xNodes); j++) {
-      stdout.write('#');
-    }
-    stdout.write('\n');
-  }
-}
-
-void printBlankSheetNodesWithBuffer({required int xNodes, required int yNodes}) {
-  var canvas = StringBuffer();
-  canvas.write(ansiEscapes.clearScreen);
-  // rows
-  for(var i = 1; i <= (3 * yNodes); i++) {
-    // cols
-    for (var j = 1; j <= (3 * xNodes); j++) {
-      canvas.write('#');
-    }
-    canvas.write('\n');
-  }
-  print(canvas);
-}
-
-
 void main() {
   var sheetNode = SheetNode();
   var sheetNodePresenter = SheetNodePresenter();
-  sheetNodePresenter.printBlankSheetNodes(xNodes: 9, yNodes: 9);
-  sleep(Duration(seconds: 2));
-  for (var i = 0; i < 9*3; i+=3) {
-    for (var j = 0; j < 9*3; j+=3) {
-      sheetNodePresenter.printSheetNode(sheetNode: sheetNode, x: j, y: i);
-    }
-  }
+  sheetNodePresenter.printBlankSheetNodes(xNodes: 3, yNodes: 3);
+  sheetNodePresenter.writeSheetNode(sheetNode: sheetNode, x: 0, y: 0);
+  sheetNodePresenter.printCanvas();
+  print('\n\n\n\n\n');
+  // sleep(Duration(seconds: 1));
+  // print('\n***\n');
+  // stdout.writeln(sheetNodePresenter.canvas.toString().runes);
+  // log(sheetNodePresenter.canvas.toString());
+  // print(sheetNodePresenter.canvas.toString());
+  // print('\n***\n');
+
+  // sheetNodePresenter.printBlankSheetNodes(xNodes: 9, yNodes: 9);
+  // for (var i = 0; i < 9*3; i+=3) {
+  //   for (var j = 0; j < 9*3; j+=3) {
+  //     sheetNodePresenter.writeSheetNode(sheetNode: sheetNode, x: j, y: i);
+  //     sheetNodePresenter.printCanvas();
+  //   }
+  // }
 }
