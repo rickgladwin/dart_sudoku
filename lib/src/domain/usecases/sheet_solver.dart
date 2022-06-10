@@ -2,6 +2,7 @@
 
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
+import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
 
 class SheetSolver {
@@ -16,6 +17,14 @@ class SheetSolver {
         if (SheetNodeHandler(sheetNode).isSolved()) {
           solvedNodes.add(sheetNode);
         }
+      }
+    }
+  }
+
+  void removeSolutionsFromRow({required int solution, required int exceptY, required int exceptX}) {
+    for (var i = 0; i < 9; i++) {
+      if (i != exceptX - 1) {
+        SheetNodeHandler(sheet.rows[exceptY - 1][i]).removeSolution(solution);
       }
     }
   }
