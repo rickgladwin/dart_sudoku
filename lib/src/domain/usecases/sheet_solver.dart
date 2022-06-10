@@ -44,4 +44,26 @@ class SheetSolver {
     //   }
     // }
   }
+
+  void removeSolutionsFromSector({required int solution, required int sectorX, required int sectorY}) {
+
+    // for (var i = 0; i < 9; i++) {
+    //   for
+    // }
+  }
+}
+
+Map sectorCoordFromNodeCoord ({required int nodeX, required int nodeY}) {
+  // results can be 1, 4, or 7
+  int sectorX;
+  int sectorY;
+  // FIXME: finish this calc. NOTE: you solved this for 200 vs 300 vs 400 level errors etc.
+
+  sectorX = (nodeX / 3).ceil();
+  sectorY = (nodeY / 3).ceil();
+
+  return {
+    'x': sectorX,
+    'y': sectorY,
+  };
 }

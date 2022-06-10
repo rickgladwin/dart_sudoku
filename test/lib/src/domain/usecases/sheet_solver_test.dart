@@ -124,6 +124,19 @@ main() {
     });
 
     test('eliminate solutions in sector', () {
+      // create solved SheetNodes
+      final solvedSet = {3};
+      final defaultMinusSolved = defaultSolutions.difference(solvedSet);
+      final solvedNodeX = 4;
+      final solvedNodeY = 6;
+
+      var sheet = createDummySheet(solvedSet, solvedNodeX, solvedNodeY);
+
+      var sheetSolver = SheetSolver(sheet);
+
+      sheetSolver.removeSolutionsFromSector(solution: 3, sectorX: solvedNodeX, sectorY: solvedNodeY);
+
+
 
     }, skip: 'TODO: seek and remove solutions in the same sector as a solved node');
 
@@ -140,6 +153,12 @@ main() {
     test('halts if the sheet cannot be solved', () {
 
     }, skip: 'TODO: create halting logic/conditions');
+  });
+
+  group('Find Sector Coordinates:', () {
+    test('finds 1,1 from 2,3', () {
+      expect(sectorCoordFromNodeCoord(nodeX: 2, nodeY: 3), {'x': 1, 'y': 1});
+    });
   });
 }
 
