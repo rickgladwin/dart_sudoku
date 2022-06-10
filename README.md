@@ -2,6 +2,8 @@
 
 A simple command-line Dart application for solving Sudoku puzzles.
 
+![coverage: 100%](https://img.shields.io/badge/coverage-100%25-green) ![version: 0.1](https://img.shields.io/badge/version-0.1-blue)
+
 ## Test
 
 ### run all tests:
