@@ -21,11 +21,27 @@ class SheetSolver {
     }
   }
 
-  void removeSolutionsFromRow({required int solution, required int exceptY, required int exceptX}) {
+  void removeSolutionsFromRow({required int solution, required int exceptX, required int exceptY}) {
     for (var i = 0; i < 9; i++) {
       if (i != exceptX - 1) {
         SheetNodeHandler(sheet.rows[exceptY - 1][i]).removeSolution(solution);
       }
     }
+  }
+
+  void removeSolutionsFromCol({required int solution, required int exceptX, required int exceptY}) {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+        if (j == exceptX - 1 && i != exceptY - 1) {
+          SheetNodeHandler(sheet.rows[i][j]).removeSolution(solution);
+        }
+      }
+    }
+
+    // for (var i = 0; i < 9; i++) {
+    //   if (i != exceptY - 1) {
+    //     SheetNodeHandler(sheet.columns[i][exceptX - 1]).removeSolution(solution);
+    //   }
+    // }
   }
 }
