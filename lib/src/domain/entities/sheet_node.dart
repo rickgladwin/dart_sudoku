@@ -7,5 +7,8 @@
 
 class SheetNode {
   late Set<int> solutions;
-  SheetNode([this.solutions = const <int>{1,2,3,4,5,6,7,8,9}]);
+
+  SheetNode([Set<int>? solutions]) {
+    this.solutions = solutions ?? <int>{1,2,3,4,5,6,7,8,9};
+  }
 }
