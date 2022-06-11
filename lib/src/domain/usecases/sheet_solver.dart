@@ -45,22 +45,29 @@ class SheetSolver {
     // }
   }
 
-  void removeSolutionsFromSector({required int solution, required int sectorX, required int sectorY}) {
+  void removeSolutionsFromSector({required int solution, required int nodeX, required int nodeY}) {
+    final Map<String, int> sectorTopLeft = sectorCoordFromNodeCoord(nodeX: nodeX, nodeY: nodeY);
+    final int sectorX = sectorTopLeft['x'] as int;
+    final int sectorY = sectorTopLeft['y'] as int;
 
-    // for (var i = 0; i < 9; i++) {
-    //   for
-    // }
+    print(sectorTopLeft);
+
+    for (var i = sectorY - 1; i < sectorY + 2; i++) {
+      for (var j = sectorX - 1; j < sectorX + 2; j++) {
+        if (i != (nodeY - 1) || j != (nodeX - 1)) {
+          SheetNodeHandler(sheet.rows[i][j]).removeSolution(solution);
+        }
+      }
+    }
   }
 }
 
-Map sectorCoordFromNodeCoord ({required int nodeX, required int nodeY}) {
-  // results can be 1, 4, or 7
-  int sectorX;
-  int sectorY;
-  // FIXME: finish this calc. NOTE: you solved this for 200 vs 300 vs 400 level errors etc.
-
-  sectorX = (nodeX / 3).ceil();
-  sectorY = (nodeY / 3).ceil();
+/// Returns the coordinates of the top left node in the sector to which the
+/// given node belongs. A sector is a block of 3x3 nodes. A sheet is 9x9 nodes,
+/// or 3x3 sectors.
+Map<String, int> sectorCoordFromNodeCoord ({required int nodeX, required int nodeY}) {
+  int sectorX = ((nodeX - 1) / 3).floor() * 3 + 1;
+  int sectorY = ((nodeY - 1) / 3).floor() * 3 + 1;
 
   return {
     'x': sectorX,

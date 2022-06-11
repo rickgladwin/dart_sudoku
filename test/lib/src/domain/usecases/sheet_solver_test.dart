@@ -134,11 +134,22 @@ main() {
 
       var sheetSolver = SheetSolver(sheet);
 
-      sheetSolver.removeSolutionsFromSector(solution: 3, sectorX: solvedNodeX, sectorY: solvedNodeY);
+      sheetSolver.removeSolutionsFromSector(solution: 3, nodeX: solvedNodeX, nodeY: solvedNodeY);
 
+      var sheetPresenter = SheetPresenter();
+      sheetPresenter.writeSheet(sheet);
+      sheetPresenter.printCanvas();
 
-
-    }, skip: 'TODO: seek and remove solutions in the same sector as a solved node');
+      // affected sector should have top left coordinate 4,4 (node array coordinate [3][3])
+      // since solved node at 4,6 belongs to sector at 2,2
+      for (var i = 3; i <= 5; i++) {
+        for (var j = 3; j <= 5; j++) {
+          if (j != (solvedNodeX - 1) && i != (solvedNodeY - 1)) {
+            expect(sheet.rows[i][j].solutions, defaultMinusSolved);
+          }
+        }
+      }
+    });
 
     test('eliminate solutions in row, column, and sector', () {
 
@@ -158,6 +169,15 @@ main() {
   group('Find Sector Coordinates:', () {
     test('finds 1,1 from 2,3', () {
       expect(sectorCoordFromNodeCoord(nodeX: 2, nodeY: 3), {'x': 1, 'y': 1});
+    });
+    test('finds 4,1 from 6,2', () {
+      expect(sectorCoordFromNodeCoord(nodeX: 6, nodeY: 2), {'x': 4, 'y': 1});
+    });
+    test('finds 7,7 from 8,9', () {
+      expect(sectorCoordFromNodeCoord(nodeX: 8, nodeY: 9), {'x': 7, 'y': 7});
+    });
+    test('finds 4,4 from 4,6', () {
+      expect(sectorCoordFromNodeCoord(nodeX: 4, nodeY: 6), {'x': 4, 'y': 4});
     });
   });
 }
