@@ -71,7 +71,7 @@ class SheetInitializer {
     }
   }
 
-  void initializeSheetWithData(rowData) {
+  void initializeSheetWithData(List<List<SheetNode?>> rowData) {
     for (var i = 0; i < 9; i++) {
       rows.add([]);
       for (var j = 0; j < 9; j++) {
@@ -79,7 +79,7 @@ class SheetInitializer {
           rows[i].add(SheetNode());
           continue;
         }
-        rows[i].add(rowData[i][j]);
+        rows[i].add(rowData[i][j] as SheetNode);
       }
     }
   }
