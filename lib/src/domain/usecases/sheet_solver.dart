@@ -37,12 +37,6 @@ class SheetSolver {
         }
       }
     }
-
-    // for (var i = 0; i < 9; i++) {
-    //   if (i != exceptY - 1) {
-    //     SheetNodeHandler(sheet.columns[i][exceptX - 1]).removeSolution(solution);
-    //   }
-    // }
   }
 
   void removeSolutionsFromSector({required int solution, required int nodeX, required int nodeY}) {
@@ -59,6 +53,12 @@ class SheetSolver {
         }
       }
     }
+  }
+
+  void removeSolutions({required int solution, required int exceptX, required int exceptY}) {
+    removeSolutionsFromRow(solution: solution, exceptX: exceptX, exceptY: exceptY);
+    removeSolutionsFromCol(solution: solution, exceptX: exceptX, exceptY: exceptY);
+    removeSolutionsFromSector(solution: solution, nodeX: exceptX, nodeY: exceptY);
   }
 }
 

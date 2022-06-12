@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_solver.dart';
-import 'package:dart_sudoku/src/presentation/presenters/sheet_presenter.dart';
+import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 import 'package:test/test.dart';
 
 const defaultSolutions = {1,2,3,4,5,6,7,8,9};
@@ -88,8 +88,6 @@ main() {
       sheetPresenter.writeSheet(sheet);
       sheetPresenter.printCanvas();
 
-      sleep(Duration(seconds: 1));
-
       for (var i = 0; i < 9; i++) {
         if (i != solvedNodeX - 1) {
           expect(sheet.rows[solvedNodeY - 1][i].solutions, defaultMinusSolved);
@@ -141,10 +139,10 @@ main() {
       sheetPresenter.printCanvas();
 
       // affected sector should have top left coordinate 4,4 (node array coordinate [3][3])
-      // since solved node at 4,6 belongs to sector at 2,2
+      // since solved node at 4,6 belongs to sector at 4,4
       for (var i = 3; i <= 5; i++) {
         for (var j = 3; j <= 5; j++) {
-          if (j != (solvedNodeX - 1) && i != (solvedNodeY - 1)) {
+          if (j != (solvedNodeX - 1) || i != (solvedNodeY - 1)) {
             expect(sheet.rows[i][j].solutions, defaultMinusSolved);
           }
         }
@@ -152,8 +150,49 @@ main() {
     });
 
     test('eliminate solutions in row, column, and sector', () {
+      // create solved SheetNodes
+      final solvedSet = {3};
+      final defaultMinusSolved = defaultSolutions.difference(solvedSet);
+      final solvedNodeX = 4;
+      final solvedNodeY = 6;
 
-    }, skip: 'TODO: eliminate ineligible solutions in all directions');
+      var sheet = createDummySheet(solvedSet, solvedNodeX, solvedNodeY);
+
+      var sheetSolver = SheetSolver(sheet);
+
+      sheetSolver.removeSolutions(solution: 3, exceptX: solvedNodeX, exceptY: solvedNodeY);
+      // TODO: create a method or function to retrieve the solution from a solved node?
+      //  OR just use node.solutions.last?
+
+      var sheetPresenter = SheetPresenter();
+      sheetPresenter.writeSheet(sheet);
+      sheetPresenter.printCanvas();
+
+      // expect solution absent from row
+      for (var i = 0; i < 9; i++) {
+        if (i != solvedNodeX - 1) {
+          expect(sheet.rows[solvedNodeY - 1][i].solutions, defaultMinusSolved);
+        }
+      }
+
+      // expect solution absent from column
+      for (var i = 0; i < 9; i++) {
+        for (var j = 0; j < 9; j++) {
+          if (j == solvedNodeX - 1 && i != solvedNodeY - 1) {
+            expect(sheet.rows[i][j].solutions, defaultMinusSolved);
+          }
+        }
+      }
+
+      // expect solution absent from sector
+      for (var i = 3; i <= 5; i++) {
+        for (var j = 3; j <= 5; j++) {
+          if (j != (solvedNodeX - 1) || i != (solvedNodeY - 1)) {
+            expect(sheet.rows[i][j].solutions, defaultMinusSolved);
+          }
+        }
+      }
+    });
   });
 
   group('Evaluate Sheet:', () {

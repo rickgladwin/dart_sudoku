@@ -1,5 +1,5 @@
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
-import 'package:dart_sudoku/src/presentation/presenters/sheet_node_presenter.dart';
+import 'package:dart_sudoku/src/service/presenters/sheet_node_presenter.dart';
 import 'package:test/test.dart';
 
 import '../../../../test_utilities/comparisons.dart';

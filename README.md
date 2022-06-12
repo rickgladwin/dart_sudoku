@@ -4,6 +4,38 @@ A simple command-line Dart application for solving Sudoku puzzles.
 
 ![coverage: 100%](https://img.shields.io/badge/coverage-100%25-green) ![version: 0.1](https://img.shields.io/badge/version-0.1-blue)
 
+## Architecture
+
+Folder structure implements a version of Robert Martin's Clean Architecture pattern,
+which follows the basic layers (parent bullet points represent inner layers first):
+- Enterprise Business Rules
+  - Entities
+- Application Business Rules
+  - Use Cases
+- Interface Adapters
+  - Controllers
+  - Gateways
+  - Presenters
+- Frameworks & Drivers
+  - Devices
+  - Web
+  - DB
+  - UI
+  - External Interfaces
+
+Dependencies always point inward (upward, in this bulleted list).
+
+Folder structure under the `src` folder, in addition to `config` etc.,
+collects the Clean Architecture layers in the following way:
+
+- domain
+  - Enterprise Business Rules
+  - Application Business Rules
+- service
+  - Interface Adapters
+- interaction
+  - Frameworks & Drivers
+
 ## Test
 
 ### run all tests:

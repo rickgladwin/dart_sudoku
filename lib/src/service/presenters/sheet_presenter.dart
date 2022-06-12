@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:ansi_escapes/ansi_escapes.dart';
-import 'package:dart_sudoku/src/presentation/presenters/sheet_node_presenter.dart';
+import 'package:dart_sudoku/src/service/presenters/sheet_node_presenter.dart';
 
 class Char {
   // grid elements
