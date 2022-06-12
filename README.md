@@ -59,11 +59,15 @@ collects the Clean Architecture layers in the following way:
 
 `dart pub global activate coverage`
 
-- generate lcov.info file (report on lib only)
+- generate lcov.info file and coverage.json ~~(report on lib only)~~
 
-`dart pub global run coverage:format_coverage --packages=.packages --report-on=lib --lcov -o ./test_coverage/lcov.info -i ./test_coverage`
+~~`dart pub global run coverage:format_coverage --packages=.packages --report-on=lib --lcov -o ./test_coverage/lcov.info -i ./test_coverage`~~
 
-- generate coverage reports (this step must be reapeated each time
+OR
+
+`dart pub global run coverage:test_with_coverage -o ./test_coverage`
+
+- generate coverage reports (this step must be repeated each time
 you wish to generate a fresh report):
 
 `genhtml test_coverage/lcov.info -o test_coverage`

@@ -1,9 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_solver.dart';
-import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
+// import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 import 'package:test/test.dart';
 
 const defaultSolutions = {1,2,3,4,5,6,7,8,9};
@@ -84,9 +84,9 @@ main() {
 
       sheetSolver.removeSolutionsFromRow(solution: 3, exceptX: solvedNodeX, exceptY: solvedNodeY);
 
-      var sheetPresenter = SheetPresenter();
-      sheetPresenter.writeSheet(sheet);
-      sheetPresenter.printCanvas();
+      // var sheetPresenter = SheetPresenter();
+      // sheetPresenter.writeSheet(sheet);
+      // sheetPresenter.printCanvas();
 
       for (var i = 0; i < 9; i++) {
         if (i != solvedNodeX - 1) {
@@ -108,9 +108,9 @@ main() {
 
       sheetSolver.removeSolutionsFromCol(solution: 3, exceptX: solvedNodeX, exceptY: solvedNodeY);
 
-      var sheetPresenter = SheetPresenter();
-      sheetPresenter.writeSheet(sheet);
-      sheetPresenter.printCanvas();
+      // var sheetPresenter = SheetPresenter();
+      // sheetPresenter.writeSheet(sheet);
+      // sheetPresenter.printCanvas();
 
       for (var i = 0; i < 9; i++) {
         for (var j = 0; j < 9; j++) {
@@ -134,9 +134,9 @@ main() {
 
       sheetSolver.removeSolutionsFromSector(solution: 3, nodeX: solvedNodeX, nodeY: solvedNodeY);
 
-      var sheetPresenter = SheetPresenter();
-      sheetPresenter.writeSheet(sheet);
-      sheetPresenter.printCanvas();
+      // var sheetPresenter = SheetPresenter();
+      // sheetPresenter.writeSheet(sheet);
+      // sheetPresenter.printCanvas();
 
       // affected sector should have top left coordinate 4,4 (node array coordinate [3][3])
       // since solved node at 4,6 belongs to sector at 4,4
@@ -164,9 +164,9 @@ main() {
       // TODO: create a method or function to retrieve the solution from a solved node?
       //  OR just use node.solutions.last?
 
-      var sheetPresenter = SheetPresenter();
-      sheetPresenter.writeSheet(sheet);
-      sheetPresenter.printCanvas();
+      // var sheetPresenter = SheetPresenter();
+      // sheetPresenter.writeSheet(sheet);
+      // sheetPresenter.printCanvas();
 
       // expect solution absent from row
       for (var i = 0; i < 9; i++) {
@@ -226,8 +226,8 @@ Sheet createDummySheet([Set<int>? solvedSetArg, int? solvedSetXArg, int? solvedS
   // init each SheetNode with a unique set of integers of length 1
   List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
 
-  final solvedSet = solvedSetArg ?? {};
-  final defaultMinusSolved = defaultSolutions.difference(solvedSet);
+  // final solvedSet = solvedSetArg ?? {};
+  // final defaultMinusSolved = defaultSolutions.difference(solvedSet);
   final solvedNode = (solvedSetArg != null) ? SheetNode(solvedSetArg) : SheetNode();
   final solvedNodeX = solvedSetXArg;
   final solvedNodeY = solvedSetYArg;
