@@ -7,10 +7,15 @@ environment:
   sdk: '>=2.16.2 <3.0.0'
 
 
-# dependencies:
-#   path: ^1.8.0
+dependencies:
+ ansi_escapes:
+   git:
+     url: git@github.com:shan-shaji/ansi-escapes-dart.git
+     ref: 4f10d5200b74954487c01f623c6113ab39bc7707 #v1.0.0 with merged PR curserTo --> cursorTo
+
 
 dev_dependencies:
   lints: ^1.0.0
   test: ^1.21.1
-dependencies: {ansi_escapes: ^1.0.0}
+
+#dependencies: {ansi_escapes: ^1.0.0}

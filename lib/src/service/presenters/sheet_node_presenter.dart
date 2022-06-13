@@ -19,7 +19,7 @@ class SheetNodePresenter {
   }
 
   void writeSheetNode({required SheetNode sheetNode, required int x, required int y}) {
-    canvas.write(ansiEscapes.curserTo(x, y));
+    canvas.write(ansiEscapes.cursorTo(x, y));
 
     if (SheetNodeHandler(sheetNode).isSolved()) {
       writeSolvedSheetNode(sheetNode: sheetNode, x: x, y: y);
@@ -39,7 +39,7 @@ class SheetNodePresenter {
       }
       if (i % 3 == 0) {
         ++nodeRow;
-        canvas.write(ansiEscapes.curserTo(x, nodeRow));
+        canvas.write(ansiEscapes.cursorTo(x, nodeRow));
       }
     }
   }
@@ -57,7 +57,7 @@ class SheetNodePresenter {
       }
       if (i % 3 == 0) {
         ++nodeRow;
-        canvas.write(ansiEscapes.curserTo(x, nodeRow));
+        canvas.write(ansiEscapes.cursorTo(x, nodeRow));
       }
     }
   }
@@ -79,7 +79,7 @@ class SheetNodePresenter {
 }
 
 // void printCoords(x, y) {
-//   stdout.write(ansiEscapes.curserTo(0,0));
+//   stdout.write(ansiEscapes.cursorTo(0,0));
 //   stdout.write('x: $x, y: $y');
 // }
 
