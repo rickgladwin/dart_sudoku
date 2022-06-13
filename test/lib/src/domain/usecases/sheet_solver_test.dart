@@ -2,6 +2,7 @@
 
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
+import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_solver.dart';
 // import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 import 'package:test/test.dart';
@@ -200,9 +201,14 @@ main() {
 
     }, skip: 'TODO: stop if the sheet is solved (a higher abstract than checking in the handler)');
 
-    test('halts if the sheet cannot be solved', () {
+    test('halts if the sheet cannot be solved', () async {
+      var unsolvedSheet = Sheet(SheetInitializer());
+      var sheetSolver = SheetSolver(unsolvedSheet);
 
-    }, skip: 'TODO: create halting logic/conditions');
+      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+
+      expect(result.finalStatus, FinalStatus.unsolvable);
+    });
   });
 
   group('Find Sector Coordinates:', () {

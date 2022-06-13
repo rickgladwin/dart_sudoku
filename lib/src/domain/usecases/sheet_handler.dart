@@ -67,4 +67,18 @@ class SheetHandler {
     var node = getNode(x: x, y: y);
     SheetNodeHandler(node).updateSolutions(newSolutions);
   }
+
+  bool sheetEquals (Sheet otherSheet) {
+    for (var i = 0; i < 9; i ++) {
+      for (var j = 0; j < 9; j ++) {
+        var solutions1 = sheet.rows[i][j].solutions;
+        var solutions2 = otherSheet.rows[i][j].solutions;
+        if (solutions1.length != solutions2.length || !solutions1.every(solutions2.contains)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
 }

@@ -78,6 +78,35 @@ void main() {
 
       expect(sheetHandler.isSolved(), false);
     });
+    test('determines that sheet matches another sheet', () {
+      var sheet1 = Sheet(SheetInitializer());
+      var sheet2 = Sheet(SheetInitializer());
+      var sheetHandler = SheetHandler(sheet1);
+
+      expect(sheetHandler.sheetEquals(sheet2), true);
+    });
+    test('determines that sheet DOES NOT match another sheet', () {
+      // create solved SheetNodes
+      // init each SheetNode with a unique set of integers of length 1
+      List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
+
+      for (var i = 1; i <= 9; i++) {
+        for (var j = 1; j <= 9; j++) {
+          sheetNodeData[i-1].add(SheetNode({Stub.solvedSheetData[i-1][j-1]}));
+        }
+      }
+
+      inspect(sheetNodeData);
+
+      var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
+      var sheet = Sheet(sheetInitializer);
+
+      var sheetHandler = SheetHandler(sheet);
+
+      var sheet2 = Sheet(SheetInitializer());
+
+      expect(sheetHandler.sheetEquals(sheet2), false);
+    });
   });
 }
 
