@@ -39,7 +39,7 @@ main() {
       var sheet = Sheet(sheetInitializer);
 
       var sheetSolver = SheetSolver(sheet);
-      sheetSolver.findSolvedNodes();
+      sheetSolver.updateSolvedNodesAndQuickHash();
 
       expect(sheetSolver.solvedNodes.length, 1);
       expect(sheetSolver.solvedNodes.first.equals(solvedNodeElement), true);
@@ -81,7 +81,7 @@ main() {
       var sheet = Sheet(sheetInitializer);
 
       var sheetSolver = SheetSolver(sheet);
-      sheetSolver.findSolvedNodes();
+      sheetSolver.updateSolvedNodesAndQuickHash();
 
       expect(sheetSolver.solvedNodes.length, 2);
       expect(
@@ -116,6 +116,56 @@ main() {
       }
     });
 
+    test('promotes a solution in a row', () {
+      // make a row that matches this:
+      // ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+      // ║12 │   │1  ║12 │12 │   ║ 2 │   │   ║
+      // ║  6│ 7 │ 5 ║ 56│  6│ 3 ║  6│ 56│ 4 ║
+      // ║  9│   │   ║ 8 │ 8 │   ║ 8 │ 8 │   ║
+      // ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝
+      // (9 in col 0 should be promoted)
+
+      var sheet = Sheet(SheetInitializer());
+      var lastRowData = [{1,2,6,9}, {7}, {1,5}, {1,2,5,6,8}, {1,2,6,8}, {3}, {2,6,8}, {5,6,8}, {4}];
+      for (var i = 0; i < 9; i++) {
+        sheet.rows[8][i].solutions = lastRowData[i];
+      }
+
+      var sheetSolver = SheetSolver(sheet);
+      sheetSolver.promoteSolutionsInRow(row: 8);
+
+      var modifiedLastRowData = [{9}, {7}, {1,5}, {1,2,5,6,8}, {1,2,6,8}, {3}, {2,6,8}, {5,6,8}, {4}];
+
+      for (var i = 0; i < 9; i++) {
+        expect(sheet.rows[8][i].solutions, equals(modifiedLastRowData[i]));
+      }
+    });
+
+    test('promotes multiple solutions in a row', () {
+      // make a row that matches this:
+      // ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+      // ║ 2 │   │1  ║ 2 │ 2 │   ║ 2 │   │   ║
+      // ║  6│ 7 │ 5 ║ 56│  6│ 3 ║  6│ 56│ 4 ║
+      // ║  9│   │   ║ 8 │ 8 │   ║ 8 │ 8 │   ║
+      // ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝
+      // (9 in col 0 and 1 in col 2 should be promoted)
+
+      var sheet = Sheet(SheetInitializer());
+      var lastRowData = [{2,6,9}, {7}, {1,5}, {2,5,6,8}, {2,6,8}, {3}, {2,6,8}, {5,6,8}, {4}];
+      for (var i = 0; i < 9; i++) {
+        sheet.rows[8][i].solutions = lastRowData[i];
+      }
+
+      var sheetSolver = SheetSolver(sheet);
+      sheetSolver.promoteSolutionsInRow(row: 8);
+
+      var modifiedLastRowData = [{9}, {7}, {1}, {2,5,6,8}, {2,6,8}, {3}, {2,6,8}, {5,6,8}, {4}];
+
+      for (var i = 0; i < 9; i++) {
+        expect(sheet.rows[8][i].solutions, equals(modifiedLastRowData[i]));
+      }
+    });
+
     test('eliminate solutions in a column', () {
       // create solved SheetNodes
       final solvedSet = {3};
@@ -139,6 +189,120 @@ main() {
             expect(sheet.rows[i][j].solutions, defaultMinusSolved);
           }
         }
+      }
+    });
+
+    test('promotes a solution in a column', () {
+      // make a column that matches this:
+      // ╤═══╤
+      // │   │
+      // │ 8 │
+      // │   │
+      // ┼───┼
+      // │1 3│
+      // │4  │
+      // │7  │
+      // ┼───┼
+      // │1 3│
+      // │4  │
+      // │7  │
+      // ╪═══╪
+      // │ 2 │
+      // │  6│
+      // │   │
+      // ┼───┼
+      // │   │
+      // │ 5 │
+      // │   │
+      // ┼───┼
+      // │123│
+      // │  6│
+      // │7  │
+      // ╪═══╪
+      // │ 23│
+      // │4 6│
+      // │   │
+      // ┼───┼
+      // │123│
+      // │4 6│
+      // │   │
+      // ┼───┼
+      // │12 │
+      // │  6│
+      // │  9│
+      // ╧═══╧
+      // (9 in row 8 should be promoted)
+
+      var sheet = Sheet(SheetInitializer());
+      var lastColData = [{8}, {1,3,4,7}, {1,3,4,7}, {2,6}, {5}, {1,2,3,6,7}, {2,3,4,6}, {1,2,3,4,6}, {1,2,6,9}];
+      for (var i = 0; i < 9; i++) {
+        sheet.rows[i][8].solutions = lastColData[i];
+      }
+
+      var sheetSolver = SheetSolver(sheet);
+      sheetSolver.promoteSolutionsInCol(col: 8);
+
+      var modifiedLastColData = [{8}, {1,3,4,7}, {1,3,4,7}, {2,6}, {5}, {1,2,3,6,7}, {2,3,4,6}, {1,2,3,4,6}, {9}];
+
+      for (var i = 0; i < 9; i++) {
+        expect(sheet.rows[i][8].solutions, equals(modifiedLastColData[i]));
+      }
+    });
+
+    test('promotes multiple solutions in a column', () {
+      // make a column that matches this:
+      // ╤═══╤
+      // │   │
+      // │ 8 │
+      // │   │
+      // ┼───┼
+      // │  3│
+      // │4  │
+      // │7  │
+      // ┼───┼
+      // │1 3│
+      // │4  │
+      // │7  │
+      // ╪═══╪
+      // │ 2 │
+      // │  6│
+      // │   │
+      // ┼───┼
+      // │   │
+      // │ 5 │
+      // │   │
+      // ┼───┼
+      // │ 23│
+      // │  6│
+      // │7  │
+      // ╪═══╪
+      // │ 23│
+      // │4 6│
+      // │   │
+      // ┼───┼
+      // │ 23│
+      // │4 6│
+      // │   │
+      // ┼───┼
+      // │ 2 │
+      // │  6│
+      // │  9│
+      // ╧═══╧
+      // (9 in row 8 and 1 in row 2 should be promoted)
+
+      var sheet = Sheet(SheetInitializer());
+      var lastColData = [{8}, {3,4,7}, {1,3,4,7}, {2,6}, {5}, {2,3,6,7}, {2,3,4,6}, {2,3,4,6}, {2,6,9}];
+      for (var i = 0; i < 9; i++) {
+        sheet.rows[i][8].solutions = lastColData[i];
+      }
+
+      var sheetSolver = SheetSolver(sheet);
+      sheetSolver.promoteSolutionsInCol(col: 8);
+
+      var modifiedLastColData = [{8}, {3,4,7}, {1}, {2,6}, {5}, {2,3,6,7}, {2,3,4,6}, {2,3,4,6}, {9}];
+
+      for (var i = 0; i < 9; i++) {
+        expect(sheet.rows[i][8].solutions, equals(modifiedLastColData[i]));
       }
     });
 
@@ -170,6 +334,104 @@ main() {
       }
     });
 
+    test('promotes solutions in a sector', () {
+      // make a sector that matches this:
+      // ╬═══╪═══╪═══╬
+      // ║   │   │   ║
+      // ║456│4 6│ 7 ║
+      // ║ 8 │ 8 │   ║
+      // ╫───┼───┼───╫
+      // ║   │12 │   ║
+      // ║ 9 │4 6│456║
+      // ║   │ 8 │ 8 ║
+      // ╫───┼───┼───╫
+      // ║1  │1  │   ║
+      // ║ 56│  6│ 3 ║
+      // ║ 8 │ 8 │   ║
+      // ╩═══╧═══╧═══╩
+      // (the 2 at 2,2 should be promoted)
+
+      var sectorData = [
+        [{4,5,6,8}, {4,6,8},     {7}      ],
+        [{9},       {1,2,4,6,8}, {4,5,6,8}],
+        [{1,5,6,8}, {1,6,8},     {3}      ],
+      ];
+
+      var sheet = Sheet(SheetInitializer());
+
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          sheet.rows[i][j].solutions = sectorData[i][j];
+        }
+      }
+
+      var sheetSolver = SheetSolver(sheet);
+      sheetSolver.promoteSolutionsInSector(sectorRow: 0, sectorCol: 0);
+
+      var modifiedSectorData = [
+        [{4,5,6,8}, {4,6,8},     {7}      ],
+        [{9},       {2},         {4,5,6,8}],
+        [{1,5,6,8}, {1,6,8},     {3}      ],
+      ];
+
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          expect(sheet.rows[i][j].solutions, equals(modifiedSectorData[i][j]));
+        }
+      }
+    });
+
+    test('promotes multiple solutions in a sector', () {
+      // make a sector that matches this:
+      // ╬═══╪═══╪═══╬
+      // ║   │   │   ║
+      // ║ 56│  6│ 7 ║
+      // ║ 8 │ 8 │   ║
+      // ╫───┼───┼───╫
+      // ║   │12 │   ║
+      // ║ 9 │  6│456║
+      // ║   │ 8 │ 8 ║
+      // ╫───┼───┼───╫
+      // ║1  │1  │   ║
+      // ║ 56│  6│ 3 ║
+      // ║ 8 │ 8 │   ║
+      // ╩═══╧═══╧═══╩
+      // (the 2 at 2,2 and the 4 at 3,2 should be promoted)
+
+      var sectorData = [
+        [{5,6,8},   {6,8},     {7}      ],
+        [{9},       {1,2,6,8}, {4,5,6,8}],
+        [{1,5,6,8}, {1,6,8},   {3}      ],
+      ];
+
+      var sheet = Sheet(SheetInitializer());
+
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          sheet.rows[i][j].solutions = sectorData[i][j];
+        }
+      }
+
+      var sheetSolver = SheetSolver(sheet);
+      sheetSolver.promoteSolutionsInSector(sectorRow: 0, sectorCol: 0);
+
+      var modifiedSectorData = [
+        [{5,6,8},   {6,8},     {7}],
+        [{9},       {2},       {4}],
+        [{1,5,6,8}, {1,6,8},   {3}],
+      ];
+
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          expect(sheet.rows[i][j].solutions, equals(modifiedSectorData[i][j]));
+        }
+      }
+    });
+
+    test('promotes solutions in row, column, and sector', () {
+      // make a sheet with promotable row, column, and sector
+    }, skip: 'TODO: create test sheet and test promote all');
+
     test('eliminate solutions in row, column, and sector', () {
       // create solved SheetNodes
       final solvedSet = {3};
@@ -182,9 +444,6 @@ main() {
       var sheetSolver = SheetSolver(sheet);
 
       sheetSolver.removeSolutions(solution: 3, exceptX: solvedNodeX, exceptY: solvedNodeY);
-      // TODO: create a method or function to retrieve the solution from a solved node?
-      //  OR just use node.solutions.last?
-
       // var sheetPresenter = SheetPresenter();
       // sheetPresenter.writeSheet(sheet);
       // sheetPresenter.printCanvas();
@@ -217,6 +476,10 @@ main() {
   });
 
   group('Evaluate Sheet:', () {
+    test('creates a quickHash for the sheet', () {
+
+    }, skip: 'update the quickHash when findSolutions() runs, for performance?');
+
     test('stops if the sheet is solved', () async {
       var unsolvedSheet = createDummySheetFromData(Stub.solvableEasySheetData2);
       var sheetSolver = SheetSolver(unsolvedSheet);
@@ -277,7 +540,6 @@ main() {
 
       expect(result.finalStatus, FinalStatus.solved);
     });
-
   });
 
   group('Find Sector Coordinates:', () {
@@ -449,3 +711,45 @@ class Stub {
     [0,7,0,0,0,3,0,0,4],
   ];
 }
+
+/// elimination method halts here (use promotion method as well beyond this):
+/// e.g. look at 1,9 – it contains the only 9 in that row, and so 9 should be
+/// promoted to that node in that row.
+///
+// ╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗
+// ║   │1 3│   ║123│123│ 2 ║   │  3│   ║
+// ║ 8 │ 5 │ 6 ║ 5 │   │ 5 ║ 4 │   │ 9 ║
+// ║   │   │   ║7  │   │   ║   │7  │   ║
+// ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+// ║1 3│1 3│1 3║123│123│ 2 ║12 │  3│123║
+// ║4  │45 │ 5 ║456│4 6│456║  6│  6│  6║
+// ║7  │   │7  ║78 │ 89│ 89║7  │7  │   ║
+// ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+// ║1 3│   │   ║1 3│1 3│   ║   │  3│   ║
+// ║4  │ 9 │ 2 ║4 6│4 6│4 6║ 5 │  6│ 8 ║
+// ║7  │   │   ║7  │   │   ║   │7  │   ║
+// ╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣
+// ║ 2 │ 2 │   ║ 2 │   │   ║   │   │   ║
+// ║  6│  6│ 9 ║4 6│ 7 │ 1 ║ 3 │456│ 56║
+// ║   │   │   ║ 8 │   │   ║   │ 8 │   ║
+// ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+// ║   │1 3│   ║  3│  3│   ║1  │   │1  ║
+// ║ 5 │  6│ 8 ║4 6│4 6│4 6║  6│ 2 │  6║
+// ║   │   │   ║   │  9│  9║7  │   │   ║
+// ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+// ║123│123│   ║ 23│   │ 2 ║1  │   │1  ║
+// ║  6│  6│ 4 ║  6│ 5 │  6║  6│  6│  6║
+// ║7  │   │   ║ 8 │   │ 89║78 │789│   ║
+// ╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣
+// ║ 23│ 23│  3║ 2 │ 2 │   ║   │   │ 23║
+// ║4 6│456│ 5 ║456│4 6│ 7 ║ 9 │ 1 │ 56║
+// ║   │ 8 │   ║ 8 │ 8 │   ║   │   │   ║
+// ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+// ║123│123│1 3║   │12 │ 2 ║ 2 │  3│   ║
+// ║4 6│456│ 5 ║ 9 │4 6│456║  6│ 56│ 7 ║
+// ║   │ 8 │   ║   │ 8 │ 8 ║ 8 │ 8 │   ║
+// ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢
+// ║12 │   │1  ║12 │12 │   ║ 2 │   │   ║
+// ║  6│ 7 │ 5 ║ 56│  6│ 3 ║  6│ 56│ 4 ║
+// ║  9│   │   ║ 8 │ 8 │   ║ 8 │ 8 │   ║
+// ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝

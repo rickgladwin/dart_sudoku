@@ -23,7 +23,7 @@ class SheetSolver {
 
   SheetSolver(this.sheet);
 
-  void findSolvedNodes() {
+  void updateSolvedNodesAndQuickHash() {
     solvedNodes.clear();
     quickHash.clear();
     for (var i = 0; i < 9; i++) {
@@ -80,6 +80,79 @@ class SheetSolver {
     removeSolutionsFromSector(solution: solution, nodeX: exceptX, nodeY: exceptY);
   }
 
+  void promoteSolutionsInRow({required int row}) {
+    for (var value = 1; value <= 9; value++) {
+      List colsWithValue = [];
+      for (var col = 0; col < 9; col++) {
+        // check all (unsolved?) columns for value
+        // record col if value found
+        if (sheet.rows[row][col].solutions.contains(value)) {
+          colsWithValue.add(col);
+        }
+      }
+      // if value found in only one col
+      //  set that node's solution set to value
+      if (colsWithValue.length == 1) {
+        sheet.rows[row][colsWithValue.first].solutions = {value};
+      }
+    }
+  }
+
+  void promoteSolutionsInCol({required int col}) {
+    for (var value = 1; value <= 9; value++) {
+      List rowsWithValue = [];
+      for (var row = 0; row < 9; row++) {
+        // check all rows for value
+        // record row if value found
+        if (sheet.rows[row][col].solutions.contains(value)) {
+          rowsWithValue.add(row);
+        }
+      }
+      // if value found in only one col
+      //  set that node's solution set to value
+      if (rowsWithValue.length == 1) {
+        sheet.rows[rowsWithValue.first][col].solutions = {value};
+      }
+    }
+  }
+
+  void promoteSolutionsInSector({required int sectorRow, required int sectorCol}) {
+    for (var value = 1; value <= 9; value++) {
+      List rowsWithValue = [];
+      List colsWithValue = [];
+
+      for (var i = sectorRow; i < sectorRow + 3; i++) {
+        for (var j = sectorCol; j < sectorCol + 3; j++) {
+          if (sheet.rows[i][j].solutions.contains(value)) {
+            rowsWithValue.add(i);
+            colsWithValue.add(j);
+          }
+        }
+      }
+
+      if (rowsWithValue.length == 1) {
+        sheet.rows[rowsWithValue.first][colsWithValue.first].solutions = {value};
+      }
+    }
+  }
+
+  void promoteSolutions() {
+    // promote solutions in all rows
+    for (var i = 0; i < 9; i++) {
+      promoteSolutionsInRow(row: i);
+    }
+    // promote solutions in all columns
+    for (var j = 0; j < 9; j++) {
+      promoteSolutionsInCol(col: j);
+    }
+    // promote solutions in all sectors
+    for (var i = 0; i < 9; i += 3) {
+      for (var j = 0; j < 9; j += 3) {
+        promoteSolutionsInSector(sectorRow: i, sectorCol: j);
+      }
+    }
+  }
+
   Future<SheetSolveResult> solve({required Sheet inputSheet}) async {
     sheet = inputSheet;
     var result = SheetSolveResult();
@@ -94,11 +167,11 @@ class SheetSolver {
     //   print('** before: ${solvedNodeElement.solvedNode.solutions}');
     // }
 
-    // update solvedNodes set
-    findSolvedNodes();
+    // update solvedNodes and quickHash set
+    updateSolvedNodesAndQuickHash();
 
-    print('\nquickHash init:');
-    print(quickHash);
+    // print('\nquickHash init:');
+    // print(quickHash);
 
     // print('BEFORE solvedNodes.length: ${solvedNodes.length}');
 
@@ -120,18 +193,23 @@ class SheetSolver {
 
     int solvedNodesCountBefore;
     int solvedNodesCountAfter;
-    StringBuffer quickHashBefore;
-    StringBuffer quickHashAfter;
+    String quickHashBefore;
+    String quickHashAfter;
 
     var rounds = 0;
+
+    var sheetPresenter = SheetPresenter();
+
 
     // loop until no updates:
     do {
       // findSolvedNodes();
+      // update solvedNodes and quickHash set
+      updateSolvedNodesAndQuickHash();
 
       // remember solutions count before updates
       solvedNodesCountBefore = solvedNodes.length;
-      quickHashBefore = quickHash;
+      quickHashBefore = quickHash.toString();
 
       // print('\nquickHash before:');
       // print(quickHash);
@@ -149,7 +227,7 @@ class SheetSolver {
       // }
 
       for (var solvedNodeElement in solvedNodes) {
-        print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
+        // print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
         removeSolutions(
             solution: solvedNodeElement.solvedNode.solutions.first,
             exceptX: solvedNodeElement.solvedNodeCoords['x'] as int,
@@ -157,23 +235,43 @@ class SheetSolver {
         );
       }
 
-      // TODO: create a method to apply the "inclusive" rules (must have one of each) to row, column, and sector,
-      //  instead of just the "exclusive" rules (can't be more than one)
-      sleep(Duration(milliseconds: 20));
+      // updateSolvedNodesAndQuickHash();
+      // quickHashAfter = quickHash.toString();
 
-      findSolvedNodes();
+      sleep(Duration(milliseconds: 200));
+
+      // sheetPresenter.writeSheet(sheet);
+      // print('*** sheet after remove ***');
+      // print(sheetPresenter.canvas);
+
+      // print('%%% quickHashBefore: $quickHashBefore');
+      // print('%%%  quickHashAfter: $quickHashAfter');
+      // print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
+      // print('&&& total rounds: $rounds');
+
+
+      promoteSolutions();
+
+      sleep(Duration(milliseconds: 200));
+
+      updateSolvedNodesAndQuickHash();
 
       // print('\nquickHash after:');
       // print(quickHash);
 
       solvedNodesCountAfter = solvedNodes.length;
-      quickHashAfter = quickHash;
+      quickHashAfter = quickHash.toString();
       // print('-- solvedNodesCountAfter: $solvedNodesCountAfter');
 
-      var sheetPresenter = SheetPresenter();
+      // var sheetPresenter = SheetPresenter();
       sheetPresenter.writeSheet(sheet);
       print('*** sheet after round ***');
       print(sheetPresenter.canvas);
+
+      print('%%% quickHashBefore: $quickHashBefore');
+      print('%%%  quickHashAfter: $quickHashAfter');
+      // print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
+      print('&&& total rounds: $rounds');
 
       // sheetHandler.sheet = sheet;
 
@@ -182,16 +280,18 @@ class SheetSolver {
       print('&&& solvedNodesCountBefore vs solvedNodesCountAfter: $solvedNodesCountBefore vs $solvedNodesCountAfter');
       print('&&& solvedNodesCountBefore != solvedNodesCountAfter: ${solvedNodesCountBefore != solvedNodesCountAfter}');
 
-      print('%%% quickHashBefore: $quickHashBefore');
-      print('%%%  quickHashAfter: $quickHashAfter');
+      // print('%%% quickHashBefore: $quickHashBefore');
+      // print('%%%  quickHashAfter: $quickHashAfter');
       print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
-      print('&&& total rounds: $rounds');
+      // print('&&& total rounds: $rounds');
 
 
       // removeSolutions should update sheetSolver.sheet (same sheet as sheetHandler.sheet)
     // } while (!sheetHandler.sheetEquals(sheetBefore));
 
+      // TODO: get do loop exit comparison working
     } while (quickHashBefore != quickHashAfter);
+    // } while (rounds < 10);
 
     //  reset updates this loop
     //  for each solved node
@@ -248,26 +348,51 @@ Map<String, int> sectorCoordFromNodeCoord ({required int nodeX, required int nod
 }
 
 Future<void> main() async {
-  // create solved SheetNodes
-  // init each SheetNode with a unique set of integers of length 1
+  // create unsolved Sheet
+  var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData);
+
+  // // init each SheetNode with a unique set of integers of length 1
+  // List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
+  //
+  // for (var i = 1; i <= 9; i++) {
+  //   for (var j = 1; j <= 9; j++) {
+  //     if (Stub.solvableSheetData[i-1][j-1] == 0) {
+  //       sheetNodeData[i-1].add(SheetNode());
+  //     } else {
+  //       sheetNodeData[i-1].add(SheetNode({Stub.solvableSheetData[i-1][j-1]}));
+  //     }
+  //   }
+  // }
+  //
+  // var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
+  // var unsolvedSheet = Sheet(sheetInitializer);
+  var sheetSolver = SheetSolver(unsolvedSheet);
+  // sheetSolver.findSolvedNodes();
+
+  var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+  print('result:');
+  print(result.finalStatus);
+  print('---');
+  var sheetPresenter = SheetPresenter();
+  sheetPresenter.writeSheet(result.finalSheet);
+  print(sheetPresenter.canvas);
+}
+
+Sheet createDummySheetFromData(List<List<int>> sheetSourceData) {
   List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
 
   for (var i = 1; i <= 9; i++) {
     for (var j = 1; j <= 9; j++) {
-      if (Stub.solvableSheetData[i-1][j-1] == 0) {
+      if (sheetSourceData[i-1][j-1] == 0) {
         sheetNodeData[i-1].add(SheetNode());
       } else {
-        sheetNodeData[i-1].add(SheetNode({Stub.solvableSheetData[i-1][j-1]}));
+        sheetNodeData[i-1].add(SheetNode({sheetSourceData[i-1][j-1]}));
       }
     }
   }
 
   var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
-  var unsolvedSheet = Sheet(sheetInitializer);
-  var sheetSolver = SheetSolver(unsolvedSheet);
-  // sheetSolver.findSolvedNodes();
-
-  var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+  return Sheet(sheetInitializer);
 }
 
 class Stub {
@@ -295,6 +420,42 @@ class Stub {
     [0,7,9,6,5,0,1,0,2],
     [0,0,0,7,0,0,5,9,8],
     [0,3,0,2,9,1,7,0,0],
+  ];
+
+  static const solvableMediumSheetData = [
+    [0,0,9,3,1,0,5,2,0],
+    [5,3,1,7,0,6,0,0,0],
+    [0,2,7,4,0,0,0,0,0],
+    [4,0,0,0,7,0,3,0,2],
+    [0,0,0,8,0,0,0,0,6],
+    [0,0,0,0,0,3,4,7,0],
+    [0,0,0,0,5,0,0,0,0],
+    [0,0,0,0,0,7,0,4,9],
+    [0,7,4,0,0,0,6,0,1],
+  ];
+
+  static const solvableHardSheetData = [
+    [5,6,0,0,0,0,0,2,7],
+    [0,4,0,0,8,0,0,1,0],
+    [1,9,0,0,5,4,0,0,0],
+    [0,0,0,0,0,0,0,0,2],
+    [2,1,0,0,0,0,0,0,0],
+    [0,0,0,1,6,0,0,0,8],
+    [9,0,0,3,0,0,0,7,0],
+    [0,0,0,0,0,6,0,0,9],
+    [0,7,0,0,0,0,0,5,6],
+  ];
+
+  static const solvableHardSheetData2 = [
+    [8,0,6,0,0,0,4,0,9],
+    [0,0,0,0,0,0,0,0,0],
+    [0,9,2,0,0,0,5,0,8],
+    [0,0,9,0,7,1,3,0,0],
+    [5,0,8,0,0,0,0,2,0],
+    [0,0,4,0,5,0,0,0,0],
+    [0,0,0,0,0,7,9,1,0],
+    [0,0,0,9,0,0,0,0,7],
+    [0,7,0,0,0,3,0,0,4],
   ];
 }
 
