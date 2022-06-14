@@ -5,7 +5,7 @@ import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
 
 
 class SheetHandler {
-  final Sheet sheet;
+  Sheet sheet;
 
   SheetHandler(this.sheet);
 

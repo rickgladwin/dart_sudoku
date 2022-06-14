@@ -6,7 +6,7 @@ import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
 class Chars {
   // static const removed = '•';
   static const removed = ' ';
-  static const canvasBlank = '#';
+  static const canvasBlank = ' ';
   static const nodeBlank = ' ';
 }
 

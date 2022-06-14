@@ -4,6 +4,7 @@ import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_solver.dart';
+import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 import 'package:test/test.dart';
 
 const defaultSolutions = {1,2,3,4,5,6,7,8,9};
@@ -216,9 +217,35 @@ main() {
   });
 
   group('Evaluate Sheet:', () {
-    test('stops if the sheet is solved', () {
+    test('stops if the sheet is solved', () async {
+      // create solved SheetNodes
+      // init each SheetNode with a unique set of integers of length 1
+      List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
 
-    }, skip: 'TODO: stop if the sheet is solved (a higher abstract than checking in the handler)');
+      for (var i = 1; i <= 9; i++) {
+        for (var j = 1; j <= 9; j++) {
+          if (Stub.solvableSheetData[i-1][j-1] == 0) {
+            sheetNodeData[i-1].add(SheetNode());
+          } else {
+            sheetNodeData[i-1].add(SheetNode({Stub.solvableSheetData[i-1][j-1]}));
+          }
+        }
+      }
+
+      var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
+      var unsolvedSheet = Sheet(sheetInitializer);
+      var sheetSolver = SheetSolver(unsolvedSheet);
+      // sheetSolver.findSolvedNodes();
+
+      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+
+      // var sheetPresenter = SheetPresenter();
+      // sheetPresenter.writeSheet(result.finalSheet);
+      // print('*** canvas ***');
+      // print(sheetPresenter.canvas);
+
+      expect(result.finalStatus, FinalStatus.solved);
+    });
 
     test('halts if the sheet cannot be solved', () async {
       var unsolvedSheet = Sheet(SheetInitializer());
@@ -322,7 +349,29 @@ Sheet createDummySheet([Set<int>? solvedSetArg, int? solvedSetXArg, int? solvedS
 }
 
 class Stub {
-  /*
+  // 38 solved nodes
+  static const solvableSheetData = [
+    [0,1,0,0,0,0,0,0,8],
+    [6,0,0,1,0,0,4,0,9],
+    [7,0,4,0,0,8,1,0,2],
+    [0,9,7,0,0,0,2,0,4],
+    [0,4,2,0,1,0,0,0,7],
+    [0,0,8,4,0,0,0,1,0],
+    [0,5,0,3,4,9,7,0,0],
+    [0,0,3,0,5,6,8,9,0],
+    [9,2,0,8,0,1,3,4,0],
+  ];
 
-   */
+  // 38 solved nodes
+  static const solvableSheetData2 = [
+    [3,4,0,0,0,0,0,7,0],
+    [8,0,0,4,0,7,2,5,0],
+    [7,0,6,8,0,0,3,0,9],
+    [0,1,3,0,0,6,4,0,0],
+    [0,0,7,0,0,4,0,1,0],
+    [0,0,4,0,0,0,6,0,3],
+    [0,7,9,6,5,0,1,0,2],
+    [0,0,0,7,0,0,5,9,8],
+    [0,3,0,2,9,1,7,0,0],
+  ];
 }
