@@ -4,7 +4,6 @@ import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_solver.dart';
-// import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 import 'package:test/test.dart';
 
 const defaultSolutions = {1,2,3,4,5,6,7,8,9};
@@ -13,15 +12,18 @@ main() {
   group('Eliminate Solutions:', () {
 
     test('finds a solved node', () {
-      // create solved SheetNodes
-      // init each SheetNode with a unique set of integers of length 1
+      // create a solved SheetNode
       List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
 
       final solvedNode = SheetNode({3});
+      final solvedNodeX = 5;
+      final solvedNodeY = 3;
+
+      final SolvedNodeElement solvedNodeElement = SolvedNodeElement(solvedNode, {'x': solvedNodeX, 'y': solvedNodeY});
 
       for (var i = 1; i <= 9; i++) {
         for (var j = 1; j <= 9; j++) {
-          if (i == 5 && j == 3) {
+          if (i == solvedNodeY && j == solvedNodeX) {
             // add a solved SheetNode
             sheetNodeData[i-1].add(solvedNode);
           } else {
@@ -31,13 +33,15 @@ main() {
         }
       }
 
+      // create sheet with one solved node
       var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
       var sheet = Sheet(sheetInitializer);
 
       var sheetSolver = SheetSolver(sheet);
       sheetSolver.findSolvedNodes();
 
-      expect(sheetSolver.solvedNodes, {solvedNode});
+      expect(sheetSolver.solvedNodes.length, 1);
+      expect(sheetSolver.solvedNodes.first.equals(solvedNodeElement), true);
     });
 
     test('finds all solved nodes', () {
@@ -46,14 +50,23 @@ main() {
       List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
 
       final solvedNode1 = SheetNode({3});
-      final solvedNode2 = SheetNode({3});
+      final solvedNode1X = 5;
+      final solvedNode1Y = 3;
+
+      final SolvedNodeElement solvedNodeElement1 = SolvedNodeElement(solvedNode1, {'x': solvedNode1X, 'y': solvedNode1Y});
+
+      final solvedNode2 = SheetNode({4});
+      final solvedNode2X = 7;
+      final solvedNode2Y = 1;
+
+      final SolvedNodeElement solvedNodeElement2 = SolvedNodeElement(solvedNode2, {'x': solvedNode2X, 'y': solvedNode2Y});
 
       for (var i = 1; i <= 9; i++) {
         for (var j = 1; j <= 9; j++) {
-          if (i == 5 && j == 3) {
+          if (i == solvedNode1Y && j == solvedNode1X) {
             // add a solved SheetNode
             sheetNodeData[i-1].add(solvedNode1);
-          } else if (i == 7 && j == 4) {
+          } else if (i == solvedNode2Y && j == solvedNode2X) {
             // add another solved SheetNode
             sheetNodeData[i-1].add(solvedNode2);
           } else {
@@ -69,7 +82,13 @@ main() {
       var sheetSolver = SheetSolver(sheet);
       sheetSolver.findSolvedNodes();
 
-      expect(sheetSolver.solvedNodes, {solvedNode1, solvedNode2});
+      expect(sheetSolver.solvedNodes.length, 2);
+      expect(
+          sheetSolver.solvedNodes.first.equals(solvedNodeElement1) ||
+          sheetSolver.solvedNodes.first.equals(solvedNodeElement2), true);
+      expect(
+          sheetSolver.solvedNodes.last.equals(solvedNodeElement1) ||
+          sheetSolver.solvedNodes.last.equals(solvedNodeElement2), true);
     });
 
     test('eliminates solutions across a row', () {
@@ -223,6 +242,54 @@ main() {
     });
     test('finds 4,4 from 4,6', () {
       expect(sectorCoordFromNodeCoord(nodeX: 4, nodeY: 6), {'x': 4, 'y': 4});
+    });
+  });
+
+  group('Compares SolvedNodeElements', () {
+    test('finds that two SolvedNodeElements are equal', () {
+      final solvedNode1 = SheetNode({3});
+      final solvedNode1X = 5;
+      final solvedNode1Y = 3;
+
+      final SolvedNodeElement solvedNodeElement1 = SolvedNodeElement(solvedNode1, {'x': solvedNode1X, 'y': solvedNode1Y});
+
+      final solvedNode2 = SheetNode({3});
+      final solvedNode2X = 5;
+      final solvedNode2Y = 3;
+
+      final SolvedNodeElement solvedNodeElement2 = SolvedNodeElement(solvedNode2, {'x': solvedNode2X, 'y': solvedNode2Y});
+
+      expect(solvedNodeElement1.equals(solvedNodeElement2), true);
+    });
+    test('finds that two SolvedNodeElements with different coords are NOT equal', () {
+      final solvedNode1 = SheetNode({3});
+      final solvedNode1X = 5;
+      final solvedNode1Y = 3;
+
+      final SolvedNodeElement solvedNodeElement1 = SolvedNodeElement(solvedNode1, {'x': solvedNode1X, 'y': solvedNode1Y});
+
+      final solvedNode2 = SheetNode({3});
+      final solvedNode2X = 2;
+      final solvedNode2Y = 9;
+
+      final SolvedNodeElement solvedNodeElement2 = SolvedNodeElement(solvedNode2, {'x': solvedNode2X, 'y': solvedNode2Y});
+
+      expect(solvedNodeElement1.equals(solvedNodeElement2), false);
+    });
+    test('finds that two SolvedNodeElements with different solutions are NOT equal', () {
+      final solvedNode1 = SheetNode({3});
+      final solvedNode1X = 5;
+      final solvedNode1Y = 3;
+
+      final SolvedNodeElement solvedNodeElement1 = SolvedNodeElement(solvedNode1, {'x': solvedNode1X, 'y': solvedNode1Y});
+
+      final solvedNode2 = SheetNode({6});
+      final solvedNode2X = 5;
+      final solvedNode2Y = 3;
+
+      final SolvedNodeElement solvedNodeElement2 = SolvedNodeElement(solvedNode2, {'x': solvedNode2X, 'y': solvedNode2Y});
+
+      expect(solvedNodeElement1.equals(solvedNodeElement2), false);
     });
   });
 }

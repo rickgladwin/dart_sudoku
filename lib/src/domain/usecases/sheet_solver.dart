@@ -5,10 +5,11 @@ import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
+import 'package:collection/collection.dart';
+
 
 class SheetSolver {
   late Sheet sheet;
-  // Set<SheetNode> solvedNodes = {};
   Set<SolvedNodeElement> solvedNodes = {};
 
   SheetSolver(this.sheet);
@@ -68,22 +69,29 @@ class SheetSolver {
   Future<SheetSolveResult> solve({required Sheet inputSheet}) async {
     sheet = inputSheet;
     var result = SheetSolveResult();
-    result.finalSheet = sheet;
+    result.finalStatus = FinalStatus.unsolved;
+
     // update solvedNodes set
     findSolvedNodes();
     //  if there are no solved nodes, return unsolvable
     if (solvedNodes.isEmpty) {
       result.finalStatus = FinalStatus.unsolvable;
+      result.finalSheet = inputSheet;
       return result;
     }
 
     Sheet sheetBefore = sheet;
     late Sheet sheetAfter;
 
+    // TODO: ensure sheet is passed by reference to both SheetHandler and SheetSolver,
+    //  or move clone() to SheetSolver?
     var sheetHandler = SheetHandler(sheet);
 
     // loop until no updates:
     do {
+      // remember sheet before updates
+      sheetBefore = sheetHandler.clone();
+
       for (var solvedNodeElement in solvedNodes) {
         removeSolutions(
             solution: solvedNodeElement.solvedNode.solutions.first,
@@ -91,14 +99,20 @@ class SheetSolver {
             exceptY: solvedNodeElement.solvedNodeCoords['y'] as int
         );
       }
-      // TODO: add clone method to SheetHandler
-      sheetAfter = sheet.copyWith();
-    } while (!sheetHandler.sheetEquals(sheetAfter))
+      // removeSolutions should update sheetSolver.sheet (same sheet as sheetHandler.sheet)
+    } while (!sheetHandler.sheetEquals(sheetBefore));
+
     //  reset updates this loop
     //  for each solved node
     //    remove competing solutions
     // if sheet is solved, return solved
     // else return unsolvable
+
+    if (solvedNodes.length == 81) {
+      result.finalStatus = FinalStatus.solved;
+    } else {
+      result.finalStatus = FinalStatus.unsolvable;
+    }
 
     return result;
   }
@@ -109,6 +123,21 @@ class SolvedNodeElement {
   late final Map<String, int> solvedNodeCoords;
 
   SolvedNodeElement(this.solvedNode, this.solvedNodeCoords);
+
+  bool equals (SolvedNodeElement other) {
+    // equal if solutions and coordinates match
+    Function mapEquals = const MapEquality().equals;
+    Function setEquals = const SetEquality().equals;
+
+    if (!setEquals(solvedNode.solutions, other.solvedNode.solutions)) {
+      return false;
+    }
+    if (!mapEquals(solvedNodeCoords, other.solvedNodeCoords)) {
+      return false;
+    }
+
+    return true;
+  }
 }
 
 /// Returns the coordinates of the top left node in the sector to which the

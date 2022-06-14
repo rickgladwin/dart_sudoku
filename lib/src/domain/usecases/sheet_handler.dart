@@ -81,4 +81,18 @@ class SheetHandler {
 
     return true;
   }
+
+  Sheet clone () {
+    // create default sheet
+    Sheet cloneSheet = Sheet(SheetInitializer());
+
+    // copy each SheetNode's solution set in the source sheet to the clone sheet
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+        cloneSheet.rows[i][j].solutions = sheet.rows[i][j].solutions;
+      }
+    }
+
+    return cloneSheet;
+  }
 }

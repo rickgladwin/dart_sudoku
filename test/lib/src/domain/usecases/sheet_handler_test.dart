@@ -108,6 +108,22 @@ void main() {
       expect(sheetHandler.sheetEquals(sheet2), false);
     });
   });
+  group('Sheet Utilities:', () {
+    test('clones a sheet (clone matches)', () {
+      var sourceSheet = Sheet(SheetInitializer());
+      var sheetHandler = SheetHandler(sourceSheet);
+      var sheetClone = sheetHandler.clone();
+
+      expect(sheetHandler.sheetEquals(sheetClone), true);
+    });
+    test('clones a sheet (clone is not identical)', () {
+      var sourceSheet = Sheet(SheetInitializer());
+      var sheetHandler = SheetHandler(sourceSheet);
+      var sheetClone = sheetHandler.clone();
+
+      expect(sourceSheet == sheetClone, false);
+    });
+  });
 }
 
 class Stub {
