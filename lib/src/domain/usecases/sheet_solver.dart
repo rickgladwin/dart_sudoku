@@ -1,14 +1,14 @@
 // the main logic for solving sudoku puzzles
 
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
-import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
+// import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
 import 'package:collection/collection.dart';
-import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
+// import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 
 
 class SheetSolver {
@@ -76,10 +76,10 @@ class SheetSolver {
     var result = SheetSolveResult();
     result.finalStatus = FinalStatus.unsolved;
 
-    var sheetPresenter = SheetPresenter();
-    sheetPresenter.writeSheet(sheet);
-    print('%% solving sheet:');
-    print(sheetPresenter.canvas);
+    // var sheetPresenter = SheetPresenter();
+    // sheetPresenter.writeSheet(sheet);
+    // print('%% solving sheet:');
+    // print(sheetPresenter.canvas);
 
     // for (var solvedNodeElement in solvedNodes) {
     //   print('** before: ${solvedNodeElement.solvedNode.solutions}');
@@ -88,7 +88,7 @@ class SheetSolver {
     // update solvedNodes set
     findSolvedNodes();
 
-    print('BEFORE solvedNodes.length: ${solvedNodes.length}');
+    // print('BEFORE solvedNodes.length: ${solvedNodes.length}');
 
     // for (var solvedNodeElement in solvedNodes) {
     //   print('** after: ${solvedNodeElement.solvedNode.solutions}');
@@ -101,17 +101,15 @@ class SheetSolver {
       return result;
     }
 
-    Sheet sheetBefore = sheet;
-    late Sheet sheetAfter;
+    // Sheet sheetBefore = sheet;
+    // late Sheet sheetAfter;
 
-    // TODO: ensure sheet is passed by reference to both SheetHandler and SheetSolver,
-    //  or move clone() to SheetSolver?
-    var sheetHandler = SheetHandler(sheet);
+    // var sheetHandler = SheetHandler(sheet);
 
     int solvedNodesCountBefore;
     int solvedNodesCountAfter;
 
-    var rounds = 0;
+    // var rounds = 0;
 
     // loop until no updates:
     do {
@@ -138,25 +136,25 @@ class SheetSolver {
             exceptY: solvedNodeElement.solvedNodeCoords['y'] as int
         );
       }
-      sleep(Duration(milliseconds: 600));
+      // sleep(Duration(milliseconds: 600));
 
       findSolvedNodes();
 
       solvedNodesCountAfter = solvedNodes.length;
-      print('-- solvedNodesCountAfter: $solvedNodesCountAfter');
+      // print('-- solvedNodesCountAfter: $solvedNodesCountAfter');
 
-      var sheetPresenter = SheetPresenter();
-      sheetPresenter.writeSheet(sheet);
-      print('*** sheetBefore canvas ***');
-      print(sheetPresenter.canvas);
+      // var sheetPresenter = SheetPresenter();
+      // sheetPresenter.writeSheet(sheet);
+      // print('*** sheetBefore canvas ***');
+      // print(sheetPresenter.canvas);
 
       // sheetHandler.sheet = sheet;
 
-      ++rounds;
+      // ++rounds;
 
-      print('&&& solvedNodesCountBefore vs solvedNodesCountAfter: $solvedNodesCountBefore vs $solvedNodesCountAfter');
-      print('&&& solvedNodesCountBefore != solvedNodesCountAfter: ${solvedNodesCountBefore != solvedNodesCountAfter}');
-      print('&&& total rounds: $rounds');
+      // print('&&& solvedNodesCountBefore vs solvedNodesCountAfter: $solvedNodesCountBefore vs $solvedNodesCountAfter');
+      // print('&&& solvedNodesCountBefore != solvedNodesCountAfter: ${solvedNodesCountBefore != solvedNodesCountAfter}');
+      // print('&&& total rounds: $rounds');
 
 
       // removeSolutions should update sheetSolver.sheet (same sheet as sheetHandler.sheet)
