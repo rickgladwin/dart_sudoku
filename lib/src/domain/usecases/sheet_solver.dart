@@ -2,26 +2,35 @@
 
 // import 'dart:io';
 
+import 'dart:io';
+
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
 // import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
 import 'package:collection/collection.dart';
+import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 // import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
 
 
 class SheetSolver {
   late Sheet sheet;
   Set<SolvedNodeElement> solvedNodes = {};
+  // TODO: make a "quick hash" string or list that will represent a state for the sheet
+  //  that is unique. Needs to be quickly buildable and also comparable to other versions of itself.
+  StringBuffer quickHash = StringBuffer();
 
   SheetSolver(this.sheet);
 
   void findSolvedNodes() {
     solvedNodes.clear();
+    quickHash.clear();
     for (var i = 0; i < 9; i++) {
       for (var j = 0; j < 9; j++) {
         var sheetNode = sheet.rows[i][j];
+        // update quickHash
+        for (var element in sheetNode.solutions) {quickHash.write(element);}
         if (SheetNodeHandler(sheetNode).isSolved()) {
           // print('SOLVED sheetNode.solutions: ${sheetNode.solutions}');
           var solvedNodeElement = SolvedNodeElement(sheetNode, {'x': j + 1, 'y': i + 1});
@@ -88,6 +97,9 @@ class SheetSolver {
     // update solvedNodes set
     findSolvedNodes();
 
+    print('\nquickHash init:');
+    print(quickHash);
+
     // print('BEFORE solvedNodes.length: ${solvedNodes.length}');
 
     // for (var solvedNodeElement in solvedNodes) {
@@ -108,8 +120,10 @@ class SheetSolver {
 
     int solvedNodesCountBefore;
     int solvedNodesCountAfter;
+    StringBuffer quickHashBefore;
+    StringBuffer quickHashAfter;
 
-    // var rounds = 0;
+    var rounds = 0;
 
     // loop until no updates:
     do {
@@ -117,6 +131,12 @@ class SheetSolver {
 
       // remember solutions count before updates
       solvedNodesCountBefore = solvedNodes.length;
+      quickHashBefore = quickHash;
+
+      // print('\nquickHash before:');
+      // print(quickHash);
+
+
 
       // print('-- solvedNodesCountBefore: $solvedNodesCountBefore');
 
@@ -129,37 +149,49 @@ class SheetSolver {
       // }
 
       for (var solvedNodeElement in solvedNodes) {
-        // print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
+        print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
         removeSolutions(
             solution: solvedNodeElement.solvedNode.solutions.first,
             exceptX: solvedNodeElement.solvedNodeCoords['x'] as int,
             exceptY: solvedNodeElement.solvedNodeCoords['y'] as int
         );
       }
-      // sleep(Duration(milliseconds: 600));
+
+      // TODO: create a method to apply the "inclusive" rules (must have one of each) to row, column, and sector,
+      //  instead of just the "exclusive" rules (can't be more than one)
+      sleep(Duration(milliseconds: 20));
 
       findSolvedNodes();
 
+      // print('\nquickHash after:');
+      // print(quickHash);
+
       solvedNodesCountAfter = solvedNodes.length;
+      quickHashAfter = quickHash;
       // print('-- solvedNodesCountAfter: $solvedNodesCountAfter');
 
-      // var sheetPresenter = SheetPresenter();
-      // sheetPresenter.writeSheet(sheet);
-      // print('*** sheetBefore canvas ***');
-      // print(sheetPresenter.canvas);
+      var sheetPresenter = SheetPresenter();
+      sheetPresenter.writeSheet(sheet);
+      print('*** sheet after round ***');
+      print(sheetPresenter.canvas);
 
       // sheetHandler.sheet = sheet;
 
-      // ++rounds;
+      ++rounds;
 
-      // print('&&& solvedNodesCountBefore vs solvedNodesCountAfter: $solvedNodesCountBefore vs $solvedNodesCountAfter');
-      // print('&&& solvedNodesCountBefore != solvedNodesCountAfter: ${solvedNodesCountBefore != solvedNodesCountAfter}');
-      // print('&&& total rounds: $rounds');
+      print('&&& solvedNodesCountBefore vs solvedNodesCountAfter: $solvedNodesCountBefore vs $solvedNodesCountAfter');
+      print('&&& solvedNodesCountBefore != solvedNodesCountAfter: ${solvedNodesCountBefore != solvedNodesCountAfter}');
+
+      print('%%% quickHashBefore: $quickHashBefore');
+      print('%%%  quickHashAfter: $quickHashAfter');
+      print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
+      print('&&& total rounds: $rounds');
 
 
       // removeSolutions should update sheetSolver.sheet (same sheet as sheetHandler.sheet)
     // } while (!sheetHandler.sheetEquals(sheetBefore));
-    } while (solvedNodesCountBefore != solvedNodesCountAfter);
+
+    } while (quickHashBefore != quickHashAfter);
 
     //  reset updates this loop
     //  for each solved node

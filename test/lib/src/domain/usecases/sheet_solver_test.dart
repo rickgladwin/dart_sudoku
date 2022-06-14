@@ -218,31 +218,10 @@ main() {
 
   group('Evaluate Sheet:', () {
     test('stops if the sheet is solved', () async {
-      // create solved SheetNodes
-      // init each SheetNode with a unique set of integers of length 1
-      List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
-
-      for (var i = 1; i <= 9; i++) {
-        for (var j = 1; j <= 9; j++) {
-          if (Stub.solvableSheetData[i-1][j-1] == 0) {
-            sheetNodeData[i-1].add(SheetNode());
-          } else {
-            sheetNodeData[i-1].add(SheetNode({Stub.solvableSheetData[i-1][j-1]}));
-          }
-        }
-      }
-
-      var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
-      var unsolvedSheet = Sheet(sheetInitializer);
+      var unsolvedSheet = createDummySheetFromData(Stub.solvableEasySheetData2);
       var sheetSolver = SheetSolver(unsolvedSheet);
-      // sheetSolver.findSolvedNodes();
 
       var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
-
-      // var sheetPresenter = SheetPresenter();
-      // sheetPresenter.writeSheet(result.finalSheet);
-      // print('*** canvas ***');
-      // print(sheetPresenter.canvas);
 
       expect(result.finalStatus, FinalStatus.solved);
     });
@@ -255,6 +234,50 @@ main() {
 
       expect(result.finalStatus, FinalStatus.unsolvable);
     });
+
+    test('solves an easy sheet', () async {
+      var unsolvedSheet = createDummySheetFromData(Stub.solvableEasySheetData2);
+      var sheetSolver = SheetSolver(unsolvedSheet);
+
+      print('testing sheet:');
+      var sheetPresenter = SheetPresenter();
+      sheetPresenter.writeSheet(unsolvedSheet);
+      print(sheetPresenter.canvas);
+
+      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+
+      expect(result.finalStatus, FinalStatus.solved);
+    });
+
+    test('solves a medium sheet', () async {
+      var unsolvedSheet = createDummySheetFromData(Stub.solvableMediumSheetData);
+      var sheetSolver = SheetSolver(unsolvedSheet);
+
+      print('testing sheet:');
+      var sheetPresenter = SheetPresenter();
+      sheetPresenter.writeSheet(unsolvedSheet);
+      print(sheetPresenter.canvas);
+
+      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+
+      expect(result.finalStatus, FinalStatus.solved);
+    });
+
+    test('solves a hard sheet', () async {
+      // var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData);
+      var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData2);
+      var sheetSolver = SheetSolver(unsolvedSheet);
+
+      print('testing sheet:');
+      var sheetPresenter = SheetPresenter();
+      sheetPresenter.writeSheet(unsolvedSheet);
+      print(sheetPresenter.canvas);
+
+      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+
+      expect(result.finalStatus, FinalStatus.solved);
+    });
+
   });
 
   group('Find Sector Coordinates:', () {
@@ -348,9 +371,25 @@ Sheet createDummySheet([Set<int>? solvedSetArg, int? solvedSetXArg, int? solvedS
   return Sheet(sheetInitializer);
 }
 
+Sheet createDummySheetFromData(List<List<int>> sheetSourceData) {
+  List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
+
+  for (var i = 1; i <= 9; i++) {
+    for (var j = 1; j <= 9; j++) {
+      if (sheetSourceData[i-1][j-1] == 0) {
+        sheetNodeData[i-1].add(SheetNode());
+      } else {
+        sheetNodeData[i-1].add(SheetNode({sheetSourceData[i-1][j-1]}));
+      }
+    }
+  }
+
+  var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
+  return Sheet(sheetInitializer);
+}
+
 class Stub {
-  // 38 solved nodes
-  static const solvableSheetData = [
+  static const solvableEasySheetData = [
     [0,1,0,0,0,0,0,0,8],
     [6,0,0,1,0,0,4,0,9],
     [7,0,4,0,0,8,1,0,2],
@@ -362,8 +401,7 @@ class Stub {
     [9,2,0,8,0,1,3,4,0],
   ];
 
-  // 38 solved nodes
-  static const solvableSheetData2 = [
+  static const solvableEasySheetData2 = [
     [3,4,0,0,0,0,0,7,0],
     [8,0,0,4,0,7,2,5,0],
     [7,0,6,8,0,0,3,0,9],
@@ -373,5 +411,41 @@ class Stub {
     [0,7,9,6,5,0,1,0,2],
     [0,0,0,7,0,0,5,9,8],
     [0,3,0,2,9,1,7,0,0],
+  ];
+
+  static const solvableMediumSheetData = [
+    [0,0,9,3,1,0,5,2,0],
+    [5,3,1,7,0,6,0,0,0],
+    [0,2,7,4,0,0,0,0,0],
+    [4,0,0,0,7,0,3,0,2],
+    [0,0,0,8,0,0,0,0,6],
+    [0,0,0,0,0,3,4,7,0],
+    [0,0,0,0,5,0,0,0,0],
+    [0,0,0,0,0,7,0,4,9],
+    [0,7,4,0,0,0,6,0,1],
+  ];
+
+  static const solvableHardSheetData = [
+    [5,6,0,0,0,0,0,2,7],
+    [0,4,0,0,8,0,0,1,0],
+    [1,9,0,0,5,4,0,0,0],
+    [0,0,0,0,0,0,0,0,2],
+    [2,1,0,0,0,0,0,0,0],
+    [0,0,0,1,6,0,0,0,8],
+    [9,0,0,3,0,0,0,7,0],
+    [0,0,0,0,0,6,0,0,9],
+    [0,7,0,0,0,0,0,5,6],
+  ];
+
+  static const solvableHardSheetData2 = [
+    [8,0,6,0,0,0,4,0,9],
+    [0,0,0,0,0,0,0,0,0],
+    [0,9,2,0,0,0,5,0,8],
+    [0,0,9,0,7,1,3,0,0],
+    [5,0,8,0,0,0,0,2,0],
+    [0,0,4,0,5,0,0,0,0],
+    [0,0,0,0,0,7,9,1,0],
+    [0,0,0,9,0,0,0,0,7],
+    [0,7,0,0,0,3,0,0,4],
   ];
 }
