@@ -394,8 +394,8 @@ class SheetSolver {
 
     // success
     // exit(0);
-    print('continue?');
-    final input = stdin.readLineSync();
+    // print('continue?');
+    // final input = stdin.readLineSync();
     return;
     // TODO: figure out why this return is never the top level.
     //  Maybe build in a return value based on whether the sheet is solved?
