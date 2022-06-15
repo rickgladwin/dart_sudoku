@@ -329,7 +329,7 @@ class SheetSolver {
       for (var j = 0; j < 9; j++) {
         // sleep(Duration(milliseconds: 10));
         // var node = sheet.rows[i][j];
-        // if node is default
+        // if node is unsolved
         // if (sheet.rows[i][j].solutions.length == 9) {
         if (sheet.rows[i][j].solutions.length != 1) {
           // try all values here
