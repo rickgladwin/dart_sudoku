@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
+import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
 // import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
 import 'package:collection/collection.dart';
@@ -18,6 +19,8 @@ import 'package:collection/collection.dart';
 
 class SheetSolver {
   late Sheet sheet;
+  late final Sheet partialSheet;
+
   Set<SolvedNodeElement> solvedNodes = {};
   StringBuffer quickHash = StringBuffer();
 
@@ -161,9 +164,9 @@ class SheetSolver {
     result.finalStatus = FinalStatus.unsolved;
 
     var sheetPresenter = SheetPresenter();
-    sheetPresenter.writeSheet(sheet);
-    print('%% solving sheet:');
-    print(sheetPresenter.canvas);
+    // sheetPresenter.writeSheet(sheet);
+    // print('%% solving sheet:');
+    // print(sheetPresenter.canvas);
 
     // for (var solvedNodeElement in solvedNodes) {
     //   print('** before: ${solvedNodeElement.solvedNode.solutions}');
@@ -327,28 +330,41 @@ class SheetSolver {
         // sleep(Duration(milliseconds: 10));
         // var node = sheet.rows[i][j];
         // if node is default
-        if (sheet.rows[i][j].solutions.length == 9) {
+        // if (sheet.rows[i][j].solutions.length == 9) {
+        if (sheet.rows[i][j].solutions.length != 1) {
           // try all values here
-          for (var value = 1; value <= 9; value++) {
+          // for (var value = 1; value <= 9; value++) {
+            // TODO: figure this out (optimize).
+          for (var value in sheet.rows[i][j].solutions) {
             // print('trying  $value at $j,$i');
             if (valueFits(value: value, row: i, col: j)) {
               // print('setting $value at $j,$i');
               sheet.rows[i][j].solutions = {value};
               // solveWithRecursion(inputSheet: sheet);
 
-              var sheetPresenter = SheetPresenter();
-              sheetPresenter.writeSheet(sheet);
-              print(sheetPresenter.canvas);
+              // var sheetPresenter = SheetPresenter();
+              // sheetPresenter.writeSheet(sheet);
+              // print(sheetPresenter.canvas);
 
+              // TODO: see about using Isolates for multi-threading here? Or will that
+              //  mess up the memory (for sheet)? The threads all need to update sheet
+              //  in a way that doesn't conflict, and they all need to use the same
+              //  copy of sheet. So yeah, multithreading might not be appropriate.
               solveWithRecursion();
-              // TODO: add a check here to see if the sheet is solved?
               //  i.e. did this last call return because it couldn't find a solution or because
               //  it solved the sheet?
-              print('resetting         $j,$i');
-              sheet.rows[i][j].solutions = {1,2,3,4,5,6,7,8,9};
+              var sheetHandler = SheetHandler(sheet);
+              if (!sheetHandler.isSolved()) {
+                print('resetting         $j,$i');
+                // TODO: figure this out (optimize).
+                sheet.rows[i][j].solutions = {1,2,3,4,5,6,7,8,9};
+                // sheet.rows[i][j].solutions = partialSheet.rows[i][j].solutions;
+              }
+              // print('resetting         $j,$i');
+              // sheet.rows[i][j].solutions = {1,2,3,4,5,6,7,8,9};
             }
           }
-          print('^^^^^^^^^^^^^^^^ no good value ^^^^^^^^^^^^^^^^^^');
+          // print('^^^^^^^^^^^^^^^^ no good value ^^^^^^^^^^^^^^^^^^');
           // exit(0);
 
           // result.finalStatus = FinalStatus.unsolved;
@@ -362,6 +378,7 @@ class SheetSolver {
           // TODO: return false here to indicate that the sheet isn't done?
           //  Or is it best practice not to return non-void if state is updated?
           //  In this case check state after the return.
+          print('all values checked. Returning.');
           return;
         }
       }
@@ -495,15 +512,22 @@ Map<String, int> sectorCoordFromNodeCoord ({required int nodeX, required int nod
 
 Future<void> main() async {
   // create unsolved Sheet
-  var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData);
-  // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData);
-  // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData2);
-  // var unsolvedSheet = createDummySheetFromData(Stub.solvableEasySheetData);
+
+  // can be solved using basic methods
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableMediumSheetData2);
+  // var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData);
+  // var unsolvedSheet = createDummySheetFromData(Stub.solvableEasySheetData);
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData3);
-  // var unsolvedSheet = createDummySheetFromData(Stub.solvableEvilSheetData);
+
+  // requires recursion (but solves in a reasonable time via recursion)
+  // NOTE: turn off intermediate prints (or use an Isolate for printing)
+  //  when using recursion.
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableNYTHardSheetData);
   // var unsolvedSheet = createDummySheetFromData(Stub.sudokuDragonStuckPuzzle1);
+  // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData2);
+  // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData);
+  var unsolvedSheet = createDummySheetFromData(Stub.solvableEvilSheetData);
+
 
   // // init each SheetNode with a unique set of integers of length 1
   // List<List<SheetNode>> sheetNodeData = [[],[],[],[],[],[],[],[],[]];
@@ -527,19 +551,49 @@ Future<void> main() async {
   // var unsolvedSheet = Sheet(sheetInitializer);
   var sheetSolver = SheetSolver(unsolvedSheet);
   // sheetSolver.findSolvedNodes();
-  sleep(Duration(milliseconds: 3000));
-  // var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+  // print('waiting 2 seconds...');
+  // sleep(Duration(milliseconds: 2000));
+  var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
   // var result = sheetSolver.solveWithRecursion(inputSheet: unsolvedSheet);
   // var result = sheetSolver.solveWithRecursion();
-  sheetSolver.solveWithRecursion();
+
+  // var sheetHandler = SheetHandler(result.finalSheet);
+
+  // TODO: create a parent method 'solve' that calls solveWithoutRecursion()
+  //  and solveWithRecursion() (conditionally) to solve all classes of puzzles
+  //  with maximum efficiency (barring codifying sudoku strategies)
+
+  // TODO: write final tests and clean up the code
+
+  // TODO: publish this as a Dart package so it can be imported into Flutter
+
+  // TODO: build the Flutter app around this core
+
+  if (result.finalStatus != FinalStatus.solved) {
+    print('basic methods could not complete the solution. Continue with recursion?');
+    sheetSolver.partialSheet = result.finalSheet;
+    var input = stdin.readLineSync();
+    sheetSolver.solveWithRecursion();
+    print('solved WITH recursion:');
+    // TODO: set a final sheet matching the result from basic methods, and reset
+    //  nodes to THAT sheet's nodes in the recursive method, rather than the default.
+    //  ALSO, try just the remaining values, NOT the full 1..9
+    sheetPresenter.writeSheet(sheetSolver.sheet);
+    print(sheetPresenter.canvas);
+  } else {
+    print('solved without recursion:');
+    sheetPresenter.writeSheet(result.finalSheet);
+    print(sheetPresenter.canvas);
+  }
+
 
   // result.finalSheet = sheetSolver.sheet;
 
-  print('result:');
+  print('done');
   // print(result.finalStatus);
-  print('---');
+  // print('---');
   // sheetPresenter.writeSheet(result.finalSheet);
-  print(sheetPresenter.canvas);
+  // print(sheetPresenter.canvas);
 }
 
 Sheet createDummySheetFromData(List<List<int>> sheetSourceData) {
