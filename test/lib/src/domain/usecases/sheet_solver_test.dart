@@ -334,6 +334,88 @@ main() {
       }
     });
 
+    test('eliminate multiple solutions in sector', () {
+      // make a sector that matches this:
+      // ╬═══╪═══╪═══╬
+      // ║   │   │   ║
+      // ║456│4  │ 7 ║
+      // ║ 8 │ 8 │   ║
+      // ╫───┼───┼───╫
+      // ║   │   │   ║
+      // ║ 9 │ 6 │456║
+      // ║   │   │ 8 ║
+      // ╫───┼───┼───╫
+      // ║1  │1  │   ║
+      // ║ 56│  6│ 3 ║
+      // ║78 │ 8 │  9║
+      // ╩═══╧═══╧═══╩
+      // (the 2 at 2,2 should be promoted)
+
+      final sectorData = [
+        [{4,5,6,8},   {4,8},   {7}      ],
+        [{9},         {6},     {4,5,6,8}],
+        [{1,5,6,7,8}, {1,6,8}, {3,9}    ],
+      ];
+
+      final List<Map<String, int>> solutionData = [
+        {
+          'solution': 7,
+          'solutionX': 3,
+          'solutionY': 1,
+        },
+        {
+          'solution': 9,
+          'solutionX': 1,
+          'solutionY': 2,
+        },
+        {
+          'solution': 6,
+          'solutionX': 2,
+          'solutionY': 2,
+        },
+      ];
+
+      var sheet = Sheet(SheetInitializer());
+
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          sheet.rows[i][j].solutions = sectorData[i][j];
+        }
+      }
+
+      var sheetSolver = SheetSolver(sheet);
+
+      for (var solutionDatum in solutionData) {
+        sheetSolver.removeSolutionsFromSector(solution: solutionDatum['solution'] as int, nodeX: solutionDatum['solutionX'] as int, nodeY: solutionDatum['solutionY'] as int);
+      }
+
+      var modifiedSectorData = [
+        [{4,5,8}, {4,8},   {7}    ],
+        [{9},     {6},     {4,5,8}],
+        [{1,5,8}, {1,8},   {3}    ],
+      ];
+
+      // var sheetPresenter = SheetPresenter();
+      // sheetPresenter.writeSheet(sheet);
+      // sheetPresenter.printCanvas();
+
+      // affected sector should have top left coordinate 4,4 (node array coordinate [3][3])
+      // since solved node at 4,6 belongs to sector at 4,4
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          expect(sheet.rows[i][j].solutions, equals(modifiedSectorData[i][j]));
+        }
+      }
+
+      for (var i = 0; i < 9; i++) {
+        for (var j = 0; j < 9; j++) {
+          if (!(i < 3 && j < 3)) {
+            expect(sheet.rows[i][j].solutions, equals({1,2,3,4,5,6,7,8,9}));
+          }
+        }
+      }
+    });
+
     test('promotes solutions in a sector', () {
       // make a sector that matches this:
       // ╬═══╪═══╪═══╬
@@ -540,6 +622,21 @@ main() {
 
       expect(result.finalStatus, FinalStatus.solved);
     });
+
+    test('solves a hard NYT sheet', () async {
+      // var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData);
+      var unsolvedSheet = createDummySheetFromData(Stub.solvableHardSheetData3);
+      var sheetSolver = SheetSolver(unsolvedSheet);
+
+      print('testing sheet:');
+      var sheetPresenter = SheetPresenter();
+      sheetPresenter.writeSheet(unsolvedSheet);
+      print(sheetPresenter.canvas);
+
+      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+
+      expect(result.finalStatus, FinalStatus.solved);
+    });
   });
 
   group('Find Sector Coordinates:', () {
@@ -709,6 +806,19 @@ class Stub {
     [0,0,0,0,0,7,9,1,0],
     [0,0,0,9,0,0,0,0,7],
     [0,7,0,0,0,3,0,0,4],
+  ];
+
+  // New York Times
+  static const solvableHardSheetData3 = [
+    [7,0,6,5,2,0,1,0,0],
+    [0,0,0,0,0,0,0,2,0],
+    [0,3,0,0,4,0,9,0,0],
+    [4,0,0,0,0,0,0,0,9],
+    [0,0,0,0,1,2,0,3,0],
+    [0,0,0,0,0,0,2,0,0],
+    [0,5,0,9,6,0,3,0,0],
+    [0,7,1,0,0,8,0,0,4],
+    [0,8,0,0,0,0,0,0,0],
   ];
 }
 
