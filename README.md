@@ -2,6 +2,10 @@
 
 A simple command-line Dart application for solving Sudoku puzzles.
 
+Uses basic elimination methods until a solution is found or these methods
+no longer yield changes, then applies brute force recursion to the remaining
+puzzle if it is unsolved.
+
 ![coverage: 100%](https://img.shields.io/badge/coverage-100%25-green) ![version: 0.1](https://img.shields.io/badge/version-0.1-blue)
 
 ## Architecture
