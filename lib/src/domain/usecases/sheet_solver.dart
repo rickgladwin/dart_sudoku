@@ -570,9 +570,10 @@ Future<void> main() async {
   // TODO: build the Flutter app around this core
 
   if (result.finalStatus != FinalStatus.solved) {
-    print('basic methods could not complete the solution. Continue with recursion?');
+    // print('basic methods could not complete the solution. Continue with recursion?');
+    print('basic methods could not complete the solution. Continuing with recursion...');
     sheetSolver.partialSheet = result.finalSheet;
-    var input = stdin.readLineSync();
+    // var input = stdin.readLineSync();
     sheetSolver.solveWithRecursion();
     print('solved WITH recursion:');
     // TODO: set a final sheet matching the result from basic methods, and reset
