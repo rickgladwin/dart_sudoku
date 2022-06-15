@@ -523,10 +523,10 @@ Future<void> main() async {
   // NOTE: turn off intermediate prints (or use an Isolate for printing)
   //  when using recursion.
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableNYTHardSheetData);
-  // var unsolvedSheet = createDummySheetFromData(Stub.sudokuDragonStuckPuzzle1);
+  var unsolvedSheet = createDummySheetFromData(Stub.sudokuDragonStuckPuzzle1);
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData2);
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData);
-  var unsolvedSheet = createDummySheetFromData(Stub.solvableEvilSheetData);
+  // var unsolvedSheet = createDummySheetFromData(Stub.solvableEvilSheetData);
 
 
   // // init each SheetNode with a unique set of integers of length 1
