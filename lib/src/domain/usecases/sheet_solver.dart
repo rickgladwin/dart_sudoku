@@ -523,10 +523,13 @@ Future<void> main() async {
   // NOTE: turn off intermediate prints (or use an Isolate for printing)
   //  when using recursion.
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableNYTHardSheetData);
-  var unsolvedSheet = createDummySheetFromData(Stub.sudokuDragonStuckPuzzle1);
+  // var unsolvedSheet = createDummySheetFromData(Stub.sudokuDragonStuckPuzzle1);
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData2);
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData);
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableEvilSheetData);
+  // NOTE: this one takes almost 2 seconds (with some extra line prints). A real doozy.
+  var unsolvedSheet = createDummySheetFromData(Stub.sudokuArtoInkalaPuzzle);
+
 
 
   // // init each SheetNode with a unique set of integers of length 1
@@ -845,6 +848,18 @@ class Stub {
     [0,0,8,9,4,0,0,0,0],
     [0,4,0,0,8,5,9,0,0],
     [9,7,1,3,2,6,4,8,5],
+  ];
+
+  static const sudokuArtoInkalaPuzzle = [
+    [8,0,0,0,0,0,0,0,0],
+    [0,0,3,6,0,0,0,0,0],
+    [0,7,0,0,9,0,2,0,0],
+    [0,5,0,0,0,7,0,0,0],
+    [0,0,0,0,4,5,7,0,0],
+    [0,0,0,1,0,0,0,3,0],
+    [0,0,1,0,0,0,0,6,8],
+    [0,0,8,5,0,0,0,1,0],
+    [0,9,0,0,0,0,4,0,0],
   ];
 }
 
