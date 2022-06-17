@@ -324,12 +324,12 @@ class SheetSolver {
       print('%%% quickHashBefore: $quickHashBefore');
       print('%%%  quickHashAfter: $quickHashAfter');
       // print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
+
+      ++rounds;
       print('&&& total rounds: $rounds');
 
       // sheetHandler.sheet = sheet;
-
-      ++rounds;
-
+      
       print('&&& solvedNodesCountBefore vs solvedNodesCountAfter: $solvedNodesCountBefore vs $solvedNodesCountAfter');
       print('&&& solvedNodesCountBefore != solvedNodesCountAfter: ${solvedNodesCountBefore != solvedNodesCountAfter}');
 
