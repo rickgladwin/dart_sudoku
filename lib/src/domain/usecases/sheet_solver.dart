@@ -440,6 +440,8 @@ class SheetSolver {
     sheetPresenter.writeSheet(sheet);
     print(sheetPresenter.canvas);
 
+    updateSolvedNodesAndQuickHash();
+
     // success
     // exit(0);
     // print('continue?');
