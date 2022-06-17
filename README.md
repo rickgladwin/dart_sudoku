@@ -40,6 +40,26 @@ collects the Clean Architecture layers in the following way:
 - interaction
   - Frameworks & Drivers
 
+## Run
+
+There is a `main()` function set up in `lib/src/domain/usecases/sheet_solver.dart`
+for manual testing and one-off runs.
+
+Puzzle data used by `main()` are static variables on the `Stub` class in the same module.
+
+Update the `main()` function to load an existing puzzle data variable or create a new one, e.g.
+```dart
+var unsolvedSheet = createDummySheetFromData(Stub.sudokuArtoInkalaPuzzle);
+```
+
+_NOTE: running this function directly will not pull from the `import_data/` files.
+A future version will include a full REPL or UI that depends on modules in the
+**interaction** and **service** layers._
+
+On the command line, run:
+
+`dart lib/src/domain/usecases/sheet_solver.dart`
+
 ## Test
 
 ### run all tests:
@@ -49,7 +69,7 @@ collects the Clean Architecture layers in the following way:
 `dart test --reporter=compact`
 
 ### run test(s) based on name:
-`dart test --name sheet [--name main]`
+`dart test --name <name substring> [--name main]`
 
 ### run single test based on filename:
 `dart test/lib/src/domain/entities/sheet_test.dart`
