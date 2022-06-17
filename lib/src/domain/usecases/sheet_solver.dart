@@ -158,7 +158,54 @@ class SheetSolver {
     }
   }
 
-  Future<SheetSolveResult> solve({required Sheet inputSheet}) async {
+  Future<SheetSolveResult> solve ({required Sheet inputSheet}) async {
+    sheet = inputSheet;
+
+    print('-- solving sheet:');
+    var sheetPresenter = SheetPresenter();
+    sheetPresenter.writeSheet(sheet);
+    print(sheetPresenter.canvas);
+
+    // var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
+    // var unsolvedSheet = Sheet(sheetInitializer);
+    var sheetSolver = SheetSolver(sheet);
+    // sheetSolver.findSolvedNodes();
+    // print('waiting 2 seconds...');
+    // sleep(Duration(milliseconds: 2000));
+    var result = await sheetSolver.solveBasic(inputSheet: sheet);
+
+    if (result.finalStatus != FinalStatus.solved) {
+      print('basic methods could not complete the solution. Continuing with recursion...');
+      sheetSolver.partialSheet = result.finalSheet;
+      sheetSolver.solveWithRecursion();
+      print('solved WITH recursion:');
+      // TODO: set a final sheet matching the result from basic methods, and reset
+      //  nodes to THAT sheet's nodes in the recursive method, rather than the default.
+      //  ALSO, try just the remaining values, NOT the full 1..9
+      // sheetPresenter.writeSheet(sheetSolver.sheet);
+      result.finalStatus = FinalStatus.solved;
+      result.finalSheet = sheet;
+      print(sheetPresenter.canvas);
+    } else {
+      print('solved without recursion:');
+      sheetPresenter.writeSheet(result.finalSheet);
+      print(sheetPresenter.canvas);
+    }
+
+    return result;
+
+
+    // result.finalSheet = sheetSolver.sheet;
+
+    print('done');
+    // print(result.finalStatus);
+    // print('---');
+    // sheetPresenter.writeSheet(result.finalSheet);
+    // print(sheetPresenter.canvas);
+
+  }
+
+  Future<SheetSolveResult> solveBasic({required Sheet inputSheet}) async {
     sheet = inputSheet;
     var result = SheetSolveResult();
     result.finalStatus = FinalStatus.unsolved;
@@ -223,16 +270,14 @@ class SheetSolver {
 
       // print('-- solvedNodesCountBefore: $solvedNodesCountBefore');
 
-      // print('solvedNodes: $solvedNodes');
-      // print('solvedNodes.first: ${solvedNodes.first}');
-      // print('solvedNodes.first.solvedNode.solutions: ${solvedNodes.first.solvedNode.solutions}');
-
-      // for (var solvedNodeElement in solvedNodes) {
-      //   print('** ${solvedNodeElement.solvedNode.solutions}');
-      // }
+      print('solvedNodes.first.solvedNode.solutions: ${solvedNodes.first.solvedNode.solutions}');
 
       for (var solvedNodeElement in solvedNodes) {
-        // print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
+        print('** ${solvedNodeElement.solvedNode.solutions}');
+      }
+
+      for (var solvedNodeElement in solvedNodes) {
+        print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
         removeSolutions(
             solution: solvedNodeElement.solvedNode.solutions.first,
             exceptX: solvedNodeElement.solvedNodeCoords['x'] as int,
@@ -355,7 +400,7 @@ class SheetSolver {
               //  it solved the sheet?
               var sheetHandler = SheetHandler(sheet);
               if (!sheetHandler.isSolved()) {
-                print('resetting         $j,$i');
+                // print('resetting         $j,$i');
                 // TODO: figure this out (optimize).
                 sheet.rows[i][j].solutions = {1,2,3,4,5,6,7,8,9};
                 // sheet.rows[i][j].solutions = partialSheet.rows[i][j].solutions;
@@ -378,7 +423,7 @@ class SheetSolver {
           // TODO: return false here to indicate that the sheet isn't done?
           //  Or is it best practice not to return non-void if state is updated?
           //  In this case check state after the return.
-          print('all values checked. Returning.');
+          // print('all values checked. Returning.');
           return;
         }
       }
@@ -431,7 +476,6 @@ class SheetSolver {
   // bool valueInRow ({required int value, required int row, required int exceptCol}) {
   bool valueInRow ({required int value, required int row}) {
     for (var col = 0; col < 9; col++) {
-      // if (col != exceptCol && sheet.rows[row][col].solutions == {value}) {
       if (setEquals(sheet.rows[row][col].solutions, {value})) {
         // print('value $value failed for row $row, col $col');
         return true;
@@ -444,7 +488,6 @@ class SheetSolver {
   // bool valueInCol ({required int value, required int col, required int exceptRow}) {
   bool valueInCol ({required int value, required int col}) {
     for (var row = 0; row < 9; row++) {
-      // if (row != exceptRow && sheet.rows[row][col].solutions == {value}) {
       if (setEquals(sheet.rows[row][col].solutions, {value})) {
         // print('value $value failed for row $row, col $col');
         return true;
@@ -461,9 +504,6 @@ class SheetSolver {
     for (var row = sectorRow; row < sectorRow + 3; row++) {
       for (var col = sectorCol; col < sectorCol + 3; col++) {
 
-        // i != (nodeY - 1) || j != (nodeX - 1)
-
-        // if (row != nodeRow && col != nodeCol && sheet.rows[row][col].solutions == {value}) {
         if (setEquals(sheet.rows[row][col].solutions, {value})) {
           // print('value $value failed for row $row, col $col');
           return true;
@@ -528,6 +568,8 @@ Future<void> main() async {
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableExpertSheetData);
   // var unsolvedSheet = createDummySheetFromData(Stub.solvableEvilSheetData);
   // NOTE: this one takes almost 2 seconds (with some extra line prints). A real doozy.
+  //  Also, none of it can be solved using basic methods. Starts with 21 solutions,
+  //  hits the recursion phase with 21 solutions. Cool.
   var unsolvedSheet = createDummySheetFromData(Stub.sudokuArtoInkalaPuzzle);
 
 
@@ -550,17 +592,10 @@ Future<void> main() async {
   sheetPresenter.writeSheet(unsolvedSheet);
   print(sheetPresenter.canvas);
 
-  // var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
-  // var unsolvedSheet = Sheet(sheetInitializer);
   var sheetSolver = SheetSolver(unsolvedSheet);
-  // sheetSolver.findSolvedNodes();
-  // print('waiting 2 seconds...');
-  // sleep(Duration(milliseconds: 2000));
-  var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
-  // var result = sheetSolver.solveWithRecursion(inputSheet: unsolvedSheet);
-  // var result = sheetSolver.solveWithRecursion();
+  // var result = await sheetSolver.solveBasic(inputSheet: unsolvedSheet);
 
-  // var sheetHandler = SheetHandler(result.finalSheet);
+  var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
 
   // TODO: create a parent method 'solve' that calls solveWithoutRecursion()
   //  and solveWithRecursion() (conditionally) to solve all classes of puzzles
@@ -572,32 +607,27 @@ Future<void> main() async {
 
   // TODO: build the Flutter app around this core
 
-  if (result.finalStatus != FinalStatus.solved) {
-    // print('basic methods could not complete the solution. Continue with recursion?');
-    print('basic methods could not complete the solution. Continuing with recursion...');
-    sheetSolver.partialSheet = result.finalSheet;
-    // var input = stdin.readLineSync();
-    sheetSolver.solveWithRecursion();
-    print('solved WITH recursion:');
-    // TODO: set a final sheet matching the result from basic methods, and reset
-    //  nodes to THAT sheet's nodes in the recursive method, rather than the default.
-    //  ALSO, try just the remaining values, NOT the full 1..9
-    sheetPresenter.writeSheet(sheetSolver.sheet);
-    print(sheetPresenter.canvas);
-  } else {
-    print('solved without recursion:');
-    sheetPresenter.writeSheet(result.finalSheet);
-    print(sheetPresenter.canvas);
-  }
+  // if (result.finalStatus != FinalStatus.solved) {
+  //   print('basic methods could not complete the solution. Continuing with recursion...');
+  //   sheetSolver.partialSheet = result.finalSheet;
+  //   sheetSolver.solveWithRecursion();
+  //   print('solved WITH recursion:');
+  //   // TODO: set a final sheet matching the result from basic methods, and reset
+  //   //  nodes to THAT sheet's nodes in the recursive method, rather than the default.
+  //   //  ALSO, try just the remaining values, NOT the full 1..9
+  //   sheetPresenter.writeSheet(sheetSolver.sheet);
+  //   print(sheetPresenter.canvas);
+  // } else {
+  //   print('solved without recursion:');
+  //   sheetPresenter.writeSheet(result.finalSheet);
+  //   print(sheetPresenter.canvas);
+  // }
 
+  sheetPresenter.writeSheet(result.finalSheet);
+  print(sheetPresenter.canvas);
 
-  // result.finalSheet = sheetSolver.sheet;
 
   print('done');
-  // print(result.finalStatus);
-  // print('---');
-  // sheetPresenter.writeSheet(result.finalSheet);
-  // print(sheetPresenter.canvas);
 }
 
 Sheet createDummySheetFromData(List<List<int>> sheetSourceData) {
@@ -862,4 +892,3 @@ class Stub {
     [0,9,0,0,0,0,4,0,0],
   ];
 }
-

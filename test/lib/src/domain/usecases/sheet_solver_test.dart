@@ -572,7 +572,7 @@ main() {
     });
 
     test('halts if the sheet cannot be solved', () async {
-      var unsolvedSheet = Sheet(SheetInitializer());
+      var unsolvedSheet = createDummySheetFromData(Stub.unsolvableSheetData);
       var sheetSolver = SheetSolver(unsolvedSheet);
 
       var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
@@ -819,6 +819,18 @@ class Stub {
     [0,5,0,9,6,0,3,0,0],
     [0,7,1,0,0,8,0,0,4],
     [0,8,0,0,0,0,0,0,0],
+  ];
+
+  static const unsolvableSheetData = [
+    [2,0,0,9,0,0,0,0,0],
+    [0,0,0,0,0,0,0,6,0],
+    [0,0,0,0,0,1,0,0,0],
+    [5,0,2,6,0,0,4,0,7],
+    [0,0,0,0,0,4,1,0,0],
+    [0,0,0,0,9,8,0,2,3],
+    [0,0,0,0,0,3,0,8,0],
+    [0,0,5,0,1,0,0,0,0],
+    [0,0,7,0,0,0,0,0,0],
   ];
 }
 
