@@ -6,7 +6,7 @@ Uses basic elimination methods until a solution is found or these methods
 no longer yield changes, then applies brute force recursion to the remaining
 puzzle if it is unsolved.
 
-![coverage: 100%](https://img.shields.io/badge/coverage-100%25-green) ![version: 0.1](https://img.shields.io/badge/version-0.1-blue)
+![coverage: 92.4%](https://img.shields.io/badge/coverage-92.4%25-green) ![version: 0.1](https://img.shields.io/badge/version-0.1-blue)
 
 ## Architecture
 
@@ -77,3 +77,7 @@ you wish to generate a fresh report):
 `genhtml test_coverage/lcov.info -o test_coverage`
 
 This will generate `test_coverage/index.html` – open this file in a web browser to view coverage reports.
+
+As one command string:
+
+`dart pub global run coverage:test_with_coverage -o ./test_coverage; genhtml test_coverage/lcov.info -o test_coverage`

@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">30</td>
-            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntry">41</td>
+            <td class="headerCovTableEntry">41</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2022-06-15 17:01:07</td>
+            <td class="headerValue">2022-06-17 10:24:14</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -69,13 +69,13 @@
 <a name="7"><span class="lineNum">       7 </span>            : class SheetHandler {</a>
 <a name="8"><span class="lineNum">       8 </span>            :   Sheet sheet;</a>
 <a name="9"><span class="lineNum">       9 </span>            : </a>
-<a name="10"><span class="lineNum">      10 </span><span class="lineCov">          1 :   SheetHandler(this.sheet);</span></a>
+<a name="10"><span class="lineNum">      10 </span><span class="lineCov">          2 :   SheetHandler(this.sheet);</span></a>
 <a name="11"><span class="lineNum">      11 </span>            : </a>
-<a name="12"><span class="lineNum">      12 </span><span class="lineCov">          1 :   bool isSolved() {</span></a>
+<a name="12"><span class="lineNum">      12 </span><span class="lineCov">          2 :   bool isSolved() {</span></a>
 <a name="13"><span class="lineNum">      13 </span>            :     // if all SheetNodes are solved, Sheet is solved</a>
-<a name="14"><span class="lineNum">      14 </span><span class="lineCov">          3 :     for (var row in sheet.rows) {</span></a>
-<a name="15"><span class="lineNum">      15 </span><span class="lineCov">          2 :       for (var sheetNode in row) {</span></a>
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">          2 :         if (!SheetNodeHandler(sheetNode).isSolved()) {</span></a>
+<a name="14"><span class="lineNum">      14 </span><span class="lineCov">          6 :     for (var row in sheet.rows) {</span></a>
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">          4 :       for (var sheetNode in row) {</span></a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">          4 :         if (!SheetNodeHandler(sheetNode).isSolved()) {</span></a>
 <a name="17"><span class="lineNum">      17 </span>            :           return false;</a>
 <a name="18"><span class="lineNum">      18 </span>            :         }</a>
 <a name="19"><span class="lineNum">      19 </span>            :       }</a>
@@ -130,12 +130,12 @@
 <a name="68"><span class="lineNum">      68 </span><span class="lineCov">          2 :     SheetNodeHandler(node).updateSolutions(newSolutions);</span></a>
 <a name="69"><span class="lineNum">      69 </span>            :   }</a>
 <a name="70"><span class="lineNum">      70 </span>            : </a>
-<a name="71"><span class="lineNum">      71 </span>            :   bool sheetEquals (Sheet otherSheet) {</a>
-<a name="72"><span class="lineNum">      72 </span>            :     for (var i = 0; i &lt; 9; i ++) {</a>
-<a name="73"><span class="lineNum">      73 </span>            :       for (var j = 0; j &lt; 9; j ++) {</a>
-<a name="74"><span class="lineNum">      74 </span>            :         var solutions1 = sheet.rows[i][j].solutions;</a>
-<a name="75"><span class="lineNum">      75 </span>            :         var solutions2 = otherSheet.rows[i][j].solutions;</a>
-<a name="76"><span class="lineNum">      76 </span>            :         if (solutions1.length != solutions2.length || !solutions1.every(solutions2.contains)) {</a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          1 :   bool sheetEquals (Sheet otherSheet) {</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          2 :     for (var i = 0; i &lt; 9; i ++) {</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">          2 :       for (var j = 0; j &lt; 9; j ++) {</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          5 :         var solutions1 = sheet.rows[i][j].solutions;</span></a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          4 :         var solutions2 = otherSheet.rows[i][j].solutions;</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          5 :         if (solutions1.length != solutions2.length || !solutions1.every(solutions2.contains)) {</span></a>
 <a name="77"><span class="lineNum">      77 </span>            :           return false;</a>
 <a name="78"><span class="lineNum">      78 </span>            :         }</a>
 <a name="79"><span class="lineNum">      79 </span>            :       }</a>
@@ -144,14 +144,14 @@
 <a name="82"><span class="lineNum">      82 </span>            :     return true;</a>
 <a name="83"><span class="lineNum">      83 </span>            :   }</a>
 <a name="84"><span class="lineNum">      84 </span>            : </a>
-<a name="85"><span class="lineNum">      85 </span>            :   Sheet clone () {</a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">          1 :   Sheet clone () {</span></a>
 <a name="86"><span class="lineNum">      86 </span>            :     // create default sheet</a>
-<a name="87"><span class="lineNum">      87 </span>            :     Sheet cloneSheet = Sheet(SheetInitializer());</a>
+<a name="87"><span class="lineNum">      87 </span><span class="lineCov">          2 :     Sheet cloneSheet = Sheet(SheetInitializer());</span></a>
 <a name="88"><span class="lineNum">      88 </span>            : </a>
 <a name="89"><span class="lineNum">      89 </span>            :     // copy each SheetNode's solution set in the source sheet to the clone sheet</a>
-<a name="90"><span class="lineNum">      90 </span>            :     for (var i = 0; i &lt; 9; i++) {</a>
-<a name="91"><span class="lineNum">      91 </span>            :       for (var j = 0; j &lt; 9; j++) {</a>
-<a name="92"><span class="lineNum">      92 </span>            :         cloneSheet.rows[i][j].solutions = sheet.rows[i][j].solutions;</a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">          2 :     for (var i = 0; i &lt; 9; i++) {</span></a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">          2 :       for (var j = 0; j &lt; 9; j++) {</span></a>
+<a name="92"><span class="lineNum">      92 </span><span class="lineCov">          9 :         cloneSheet.rows[i][j].solutions = sheet.rows[i][j].solutions;</span></a>
 <a name="93"><span class="lineNum">      93 </span>            :       }</a>
 <a name="94"><span class="lineNum">      94 </span>            :     }</a>
 <a name="95"><span class="lineNum">      95 </span>            : </a>
