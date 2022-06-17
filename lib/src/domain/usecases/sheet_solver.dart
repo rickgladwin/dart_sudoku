@@ -178,12 +178,12 @@ class SheetSolver {
       print('basic methods could not complete the solution. Continuing with recursion...');
       sheetSolver.partialSheet = result.finalSheet;
       sheetSolver.solveWithRecursion();
-      print('solved WITH recursion:');
+      print('attempted solution WITH recursion:');
       // TODO: set a final sheet matching the result from basic methods, and reset
       //  nodes to THAT sheet's nodes in the recursive method, rather than the default.
       //  ALSO, try just the remaining values, NOT the full 1..9
       // sheetPresenter.writeSheet(sheetSolver.sheet);
-      result.finalStatus = FinalStatus.solved;
+      result.finalStatus = sheetSolver.solvedNodes.length == 81 ? FinalStatus.solved : FinalStatus.unsolvable;
       result.finalSheet = sheet;
       print(sheetPresenter.canvas);
     } else {
@@ -277,12 +277,15 @@ class SheetSolver {
       }
 
       for (var solvedNodeElement in solvedNodes) {
-        print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
-        removeSolutions(
-            solution: solvedNodeElement.solvedNode.solutions.first,
-            exceptX: solvedNodeElement.solvedNodeCoords['x'] as int,
-            exceptY: solvedNodeElement.solvedNodeCoords['y'] as int
-        );
+        // print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
+        if (solvedNodeElement.solvedNode.solutions.isNotEmpty) {
+          print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
+          removeSolutions(
+              solution: solvedNodeElement.solvedNode.solutions.first,
+              exceptX: solvedNodeElement.solvedNodeCoords['x'] as int,
+              exceptY: solvedNodeElement.solvedNodeCoords['y'] as int
+          );
+        }
       }
 
       // updateSolvedNodesAndQuickHash();
