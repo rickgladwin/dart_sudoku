@@ -101,3 +101,20 @@ This will generate `test_coverage/index.html` – open this file in a web browse
 As one command string:
 
 `dart pub global run coverage:test_with_coverage -o ./test_coverage; genhtml test_coverage/lcov.info -o test_coverage`
+
+## Theory and Citations
+
+The `sheet_solver` library uses two basic methods to solve the sheet quickly:
+- **elimination**: for each solved node, *eliminate* matching possible solutions in the other nodes in the solved
+node's row, column, and sector.
+- **promotion**: for each unsolved node, for each possible solution in that node, check the other nodes
+in the unsolved node's row, column, and sector. If the solution is not found in these other nodes,
+*promote* the possible solution in the unsolved node to be the solution.
+
+These basic methods will typically solve Easy and Medium Sudoku puzzles. If the sheet is not solved after
+applying these basic methods exhaustively, a method of recursion and backtracking is applied to the
+*remaining* sheet data. This method is based on an example from Professor Thorsten Altenkirch of the University 
+of Nottingham.
+
+If the sheet is not solved after applying all the above methods exhaustively, the `solve()` function
+will indicate the sheet is unsolvable, and return the partially solved sheet.

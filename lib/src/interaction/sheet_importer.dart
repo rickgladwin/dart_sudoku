@@ -93,6 +93,11 @@ class SheetImporter {
   Future<Sheet> importToSheet({required String fileName}) async {
     await importFileContent(fileName: fileName);
     // validate
+    var fileIsValidResult = await validate(dataFile: fileName);
+    if (fileIsValidResult.status == false) {
+      throw Exception(fileIsValidResult.message);
+    }
+
     // clean
     if (getFileExtension(fileName: fileName) == 'sdk') {
       cleanSDKFileData(sdkFileData: puzzleData);
