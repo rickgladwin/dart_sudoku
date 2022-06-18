@@ -42,6 +42,13 @@ collects the Clean Architecture layers in the following way:
 
 ## Run
 
+On the command line:
+```bash
+dart lib/src/main.dart
+```
+
+OR
+
 There is a `main()` function set up in `lib/src/domain/usecases/sheet_solver.dart`
 for manual testing and one-off runs.
 

@@ -34,7 +34,7 @@ Future<void> main(List<String> args) async {
 
   // solve puzzle
   var sheetSolver = SheetSolver(sheet);
-  var result = await sheetSolver.solve(inputSheet: sheet);
+  var result = await sheetSolver.solve();
 
   // display results
   if (result.finalStatus == FinalStatus.solved) {

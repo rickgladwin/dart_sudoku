@@ -646,7 +646,7 @@ main() {
       var unsolvedSheet = createDummySheetFromData(Stub.solvableEasySheetData2);
       var sheetSolver = SheetSolver(unsolvedSheet);
 
-      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+      var result = await sheetSolver.solve();
 
       expect(result.finalStatus, FinalStatus.solved);
     });
@@ -655,7 +655,7 @@ main() {
       var unsolvedSheet = createDummySheetFromData(Stub.unsolvableSheetData);
       var sheetSolver = SheetSolver(unsolvedSheet);
 
-      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+      var result = await sheetSolver.solve();
 
       expect(result.finalStatus, FinalStatus.unsolvable);
     });
@@ -669,7 +669,7 @@ main() {
       sheetPresenter.writeSheet(unsolvedSheet);
       print(sheetPresenter.canvas);
 
-      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+      var result = await sheetSolver.solve();
 
       expect(result.finalStatus, FinalStatus.solved);
     });
@@ -683,7 +683,7 @@ main() {
       sheetPresenter.writeSheet(unsolvedSheet);
       print(sheetPresenter.canvas);
 
-      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+      var result = await sheetSolver.solve();
 
       expect(result.finalStatus, FinalStatus.solved);
     });
@@ -698,7 +698,7 @@ main() {
       sheetPresenter.writeSheet(unsolvedSheet);
       print(sheetPresenter.canvas);
 
-      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+      var result = await sheetSolver.solve();
 
       expect(result.finalStatus, FinalStatus.solved);
     });
@@ -713,7 +713,7 @@ main() {
       sheetPresenter.writeSheet(unsolvedSheet);
       print(sheetPresenter.canvas);
 
-      var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+      var result = await sheetSolver.solve();
 
       expect(result.finalStatus, FinalStatus.solved);
     });

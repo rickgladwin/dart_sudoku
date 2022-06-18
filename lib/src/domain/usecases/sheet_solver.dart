@@ -1,24 +1,16 @@
 // the main logic for solving sudoku puzzles
 
-// import 'dart:io';
-
-import 'dart:io';
-
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
-// import 'package:dart_sudoku/src/domain/usecases/sheet_handler.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_node_handler.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
-// import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
-import 'package:collection/collection.dart';
-
 
 
 class SheetSolver {
-  late Sheet sheet;
+  Sheet sheet;
   late final Sheet? partialSheet;
 
   Set<SolvedNodeElement> solvedNodes = {};
@@ -38,8 +30,8 @@ class SheetSolver {
         var sheetNode = sheet.rows[i][j];
         // update quickHash
         for (var element in sheetNode.solutions) {quickHash.write(element);}
+
         if (SheetNodeHandler(sheetNode).isSolved()) {
-          // print('SOLVED sheetNode.solutions: ${sheetNode.solutions}');
           var solvedNodeElement = SolvedNodeElement(sheetNode, {'x': j + 1, 'y': i + 1});
             solvedNodes.add(solvedNodeElement);
         }
@@ -70,8 +62,6 @@ class SheetSolver {
     final int sectorX = sectorTopLeft['x'] as int;
     final int sectorY = sectorTopLeft['y'] as int;
 
-    // print(sectorTopLeft);
-
     for (var i = sectorY - 1; i < sectorY + 2; i++) {
       for (var j = sectorX - 1; j < sectorX + 2; j++) {
         if (i != (nodeY - 1) || j != (nodeX - 1)) {
@@ -91,7 +81,7 @@ class SheetSolver {
     for (var value = 1; value <= 9; value++) {
       List colsWithValue = [];
       for (var col = 0; col < 9; col++) {
-        // check all (unsolved?) columns for value
+        // check all columns for value
         // record col if value found
         if (sheet.rows[row][col].solutions.contains(value)) {
           colsWithValue.add(col);
@@ -160,32 +150,28 @@ class SheetSolver {
     }
   }
 
-  Future<SheetSolveResult> solve ({required Sheet inputSheet}) async {
-    sheet = inputSheet;
+  Future<SheetSolveResult> solve () async {
+    // sheet = inputSheet;
 
-    print('-- solving sheet:');
-    var sheetPresenter = SheetPresenter();
-    sheetPresenter.writeSheet(sheet);
-    print(sheetPresenter.canvas);
-
-    // var sheetInitializer = SheetInitializer(rowData: sheetNodeData);
-    // var unsolvedSheet = Sheet(sheetInitializer);
-    var sheetSolver = SheetSolver(sheet);
+    // var sheetSolver = SheetSolver(sheet);
     // sheetSolver.findSolvedNodes();
     // print('waiting 2 seconds...');
     // sleep(Duration(milliseconds: 2000));
-    var result = await sheetSolver.solveBasic(inputSheet: sheet);
+    var result = await solveBasic();
+
+    var sheetPresenter = SheetPresenter();
 
     if (result.finalStatus != FinalStatus.solved) {
       print('basic methods could not complete the solution. Continuing with recursion...');
       var sheetHandler = SheetHandler(result.finalSheet);
 
       // sheetSolver.partialSheet = result.finalSheet;
-      sheetSolver.partialSheet = sheetHandler.clone();
-      sheetSolver.solveWithRecursion();
+      partialSheet = sheetHandler.clone();
+      solveWithRecursion();
       print('attempted solution WITH recursion:');
-      result.finalStatus = sheetSolver.solvedNodes.length == 81 ? FinalStatus.solved : FinalStatus.unsolvable;
+      result.finalStatus = solvedNodes.length == 81 ? FinalStatus.solved : FinalStatus.unsolvable;
       result.finalSheet = sheet;
+
       sheetPresenter.writeSheet(result.finalSheet);
       print(sheetPresenter.canvas);
     } else {
@@ -207,8 +193,8 @@ class SheetSolver {
 
   }
 
-  Future<SheetSolveResult> solveBasic({required Sheet inputSheet}) async {
-    sheet = inputSheet;
+  Future<SheetSolveResult> solveBasic() async {
+    // sheet = inputSheet;
     var result = SheetSolveResult();
     result.finalStatus = FinalStatus.unsolved;
 
@@ -236,7 +222,7 @@ class SheetSolver {
     //  if there are no solved nodes, return unsolvable
     if (solvedNodes.isEmpty) {
       result.finalStatus = FinalStatus.unsolvable;
-      result.finalSheet = inputSheet;
+      result.finalSheet = sheet;
       return result;
     }
 
@@ -565,9 +551,9 @@ Future<void> main() async {
 
   var sheetSolver = SheetSolver(unsolvedSheet);
 
-  var result = await sheetSolver.solve(inputSheet: unsolvedSheet);
+  var result = await sheetSolver.solve();
 
-  // TODO: write final tests and clean up the code
+  // TODO: clean up the code
 
   // TODO: publish this as a Dart package so it can be imported into Flutter
 
