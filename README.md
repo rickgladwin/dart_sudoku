@@ -59,8 +59,8 @@ Update the `main()` function to load an existing puzzle data variable or create 
 var unsolvedSheet = createDummySheetFromData(Stub.sudokuArtoInkalaPuzzle);
 ```
 
-_NOTE: running this function directly will not pull from the `import_data/` files.
-A future version will include a full REPL or UI that depends on modules in the
+_NOTE: running this function directly will not pull from the `import_data/` files. Only the
+`main.dart` library uses a command line REPL and libraries in the
 **interaction** and **service** layers._
 
 On the command line, run:
