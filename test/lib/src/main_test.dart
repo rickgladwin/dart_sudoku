@@ -18,18 +18,10 @@ void main() {
           final process = await Process.start('dart', [mainPath]);
           final lineStream = process.stdout
           .transform(const Utf8Decoder(allowMalformed: true))
-              // .transform(const AsciiDecoder(allowInvalid: true));
-              .transform(const LineSplitter());
+          .transform(const LineSplitter());
 
           // (hit enter)
           process.stdin.writeln();
-
-          // print('#### lineStream: ${lineStream.toString()}');
-
-          // FIXME: check this for building a converter that will handle unicode box chars
-          //  https://dart.dev/articles/archive/converters-and-codecs
-          // TODO: check the dart utf package to see what it uses (and try importing it)
-          //  https://pub.dev/documentation/utf/latest/utf/utf-library.html
 
           // read output
           var lineStreamBuffer = StringBuffer();
@@ -40,7 +32,6 @@ void main() {
 
           print('^^^');
           print('9: \u0057 – ${String.fromCharCode(filterCodeUnits.last)}');
-          // print('9: \u0057 – ${String.fromCharCodes(filterCodeUnits.last)}');
           print('^^^');
 
           // var topLine = '╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗';
@@ -119,18 +110,10 @@ void main() {
           print('!!!!!!!!!!!!!! filteredLineStreamString: \n' + filteredLineStreamString);
           print('!!!!!!!!!!!!!! expectedQuickHash: \n' + KnownGood.easySolvedPuzzleQuickHash);
 
+          // TODO: clean up code
+          // TODO: apply the stdout filter to medium and hard puzzles
+
           expect(filteredLineStreamString.contains(KnownGood.easySolvedPuzzleQuickHash), true);
-
-          // TODO: splitting the stream like this isolates the control code string sequences. It's the
-          //  control codes that seem to be choking the decoder. So find a way to filter them out, THEN
-          //  filter the [1-9] in. The control codes all start with a '[' and end with an 'H', when printed
-          //  to screen as a string literal. Filter out sequences matching that pattern.
-          // split the buffer content at each character
-          // iterate through the list, turning rejection on at a '[' and off after a 'H'
-          // concatenate the list into a string, filtering out all but [1-9]
-          // (the result should match the quickHash string for the solved sheet)
-
-
 
           var filteredQuickHash = StringBuffer();
           var unfilteredQuickHash = StringBuffer();
@@ -263,9 +246,6 @@ void main() {
           print('^^^^^^^^^^^^^');
           print(replacedResult);
           print('^^^^^^^^^^^^^');
-
-          // FIXME: the lineStream actually outputs codeUnits. Filter by codeUnit, or convert to string chars first.
-
 
           final matches = filterOutNonNumbers(inputString: lineStreamBuffer.toString());
           // final matches = filterOutNonNumbers(inputString: lineStreamBuffer);
