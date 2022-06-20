@@ -27,7 +27,9 @@ void main() {
           // print('#### lineStream: ${lineStream.toString()}');
 
           // FIXME: check this for building a converter that will handle unicode box chars
+          //  https://dart.dev/articles/archive/converters-and-codecs
           // TODO: check the dart utf package to see what it uses (and try importing it)
+          //  https://pub.dev/documentation/utf/latest/utf/utf-library.html
 
           // read output
           var lineStreamBuffer = StringBuffer();
