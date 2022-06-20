@@ -16,10 +16,10 @@ void main() {
 
           // start the app in its own process
           final process = await Process.start('dart', [mainPath]);
-          final lineStream = process.stdout;
-          // .transform(const Utf8Decoder());
+          final lineStream = process.stdout
+          .transform(const Utf8Decoder(allowMalformed: true))
               // .transform(const AsciiDecoder(allowInvalid: true));
-              // .transform(const LineSplitter());
+              .transform(const LineSplitter());
 
           // (hit enter)
           process.stdin.writeln();
@@ -44,13 +44,18 @@ void main() {
           print('^^^');
 
           // var topLine = '╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗';
-          var topLine = '╔';
+          // var topLine = '╔';
+          var topLine = KnownGood.easySolvedPuzzle;
           print('topLine: $topLine');
           var topLineCodes = topLine.codeUnits;
+          var topLineRunes = topLine.runes;
           print('topLineCodes: $topLineCodes');
+          print('topLineRunes: $topLineRunes');
           // var topLineBytes =
           // print(topLineCodes);
-          print('topLineCodeChar: ${String.fromCharCode(topLineCodes.first)}');
+          print('topLineCodeChar from codeUnits: ${String.fromCharCode(topLineCodes.first)}');
+          print('topLineCodeChars from codeUnits: ${String.fromCharCodes(topLineCodes)}');
+          print('topLineCodeChar from runes: ${String.fromCharCode(topLineRunes.first)}');
 
           // var topLineCodes16 = encodeUtf16(topLine);
           const utf8Decoder = Utf8Decoder(allowMalformed: true);
@@ -66,10 +71,11 @@ void main() {
 
 
 
-          await for (List<int> line in lineStream) {
+          // await for (List<int> line in lineStream) {
+          await for (var line in lineStream) {
             print('\n\n#### lineStream line: $line\n\n');
-            print('\n\n@@@@ lineStream line converted: ${String.fromCharCodes(line)}');
-            print('\n\n@@@@ lineStream line converted codes: ${String.fromCharCodes(line).codeUnits}');
+            // print('\n\n@@@@ lineStream line converted: ${String.fromCharCodes(line)}');
+            // print('\n\n@@@@ lineStream line converted codes: ${String.fromCharCodes(line).codeUnits}');
             // print('\n\n#### line.length: ${line.length}');
             // print('\n\n#### KnownGood.easySolvedPuzzle: ${KnownGood.easySolvedPuzzle}');
             // print('\n\n#### KnownGood.easySolvedPuzzle.length: ${KnownGood.easySolvedPuzzle.length}');
@@ -78,11 +84,11 @@ void main() {
             // compare
             // print(line.split(''));
 
-            Iterable<int> filteredLine = line.where((element) => element == 57);
+            // Iterable<int> filteredLine = line.where((element) => element == 57);
 
-            print('\n\n^^^ filteredLine: $filteredLine');
-            print('\n\n^^^ filteredLine.length: ${filteredLine.length}');
-            print('\n\n!!! filteredLine chars: ${String.fromCharCodes(filteredLine)}');
+            // print('\n\n^^^ filteredLine: $filteredLine');
+            // print('\n\n^^^ filteredLine.length: ${filteredLine.length}');
+            // print('\n\n!!! filteredLine chars: ${String.fromCharCodes(filteredLine)}');
 
             lineStreamBuffer.write(line);
             lineStreamList.add(line);
@@ -93,14 +99,38 @@ void main() {
 
 
           // print('#### lineStreamBuffer: ${lineStreamBuffer.toString()}');
-          // print('\n\n#### lineStreamBuffer: $lineStreamBuffer');
+          print('\n' * 30);
+          print('\n\n#### lineStreamBuffer: $lineStreamBuffer');
           // print('#### lineStreamBuffer.runes: ${lineStreamBuffer.toString().runes}');
           // print('\n\n#### lineStreamBuffer.codeUnits: ${lineStreamBuffer.toString().codeUnits}');
 
           // print('\n\n%%%% lineStreamList: ${lineStreamList.toString()}');
-          // print('\n\n%%%% lineStreamList: $lineStreamList');
+          print('\n\n%%%% lineStreamList: $lineStreamList');
           // print('%%%% lineStreamList.runes: ${lineStreamList.toString().runes}');
           // print('\n\n%%%% lineStreamList.codeUnits: ${lineStreamList.toString().codeUnits}');
+          print('\n' * 30);
+          print('@@@@ lineStreamBuffer split: ${lineStreamBuffer.toString().split("")}');
+
+          print('\n' * 30);
+          print('@@@@ lineStreamBuffer: ${lineStreamBuffer.toString()}');
+
+          var filteredLineStreamString = filterForSolutions(lineStreamBuffer.toString());
+          print('\n' * 30);
+          print('!!!!!!!!!!!!!! filteredLineStreamString: \n' + filteredLineStreamString);
+          print('!!!!!!!!!!!!!! expectedQuickHash: \n' + KnownGood.easySolvedPuzzleQuickHash);
+
+          expect(filteredLineStreamString.contains(KnownGood.easySolvedPuzzleQuickHash), true);
+
+          // TODO: splitting the stream like this isolates the control code string sequences. It's the
+          //  control codes that seem to be choking the decoder. So find a way to filter them out, THEN
+          //  filter the [1-9] in. The control codes all start with a '[' and end with an 'H', when printed
+          //  to screen as a string literal. Filter out sequences matching that pattern.
+          // split the buffer content at each character
+          // iterate through the list, turning rejection on at a '[' and off after a 'H'
+          // concatenate the list into a string, filtering out all but [1-9]
+          // (the result should match the quickHash string for the solved sheet)
+
+
 
           var filteredQuickHash = StringBuffer();
           var unfilteredQuickHash = StringBuffer();
@@ -126,29 +156,29 @@ void main() {
           //   }
           // }
 
-          for (List<int> elementList in lineStreamList) {
-
-            var elementCode = String.fromCharCodes(elementList);
-
-            unfilteredQuickHash16.write(String.fromCharCodes(elementList, 0, 16));
-
-            for (int element in elementList) {
-              // print('*** element: $element');
-              // print('^^^ char:    ${String.fromCharCode(element)}');
-
-              var elementChar = String.fromCharCode(element);
-              // print('elementChar.length: ${elementChar.length}');
-
-              unfilteredQuickHash.write(String.fromCharCode(element));
-
-              if (filterCodeUnits.contains(element)) {
-                // print('!!!!!!!!!! passed filter !!!!!!!!!!');
-                filteredQuickHash.write(String.fromCharCode(element));
-                // print(String.fromCharCode(element));
-                // sleep(Duration(milliseconds: 5));
-              }
-            }
-          }
+          // for (List<int> elementList in lineStreamList) {
+          //
+          //   var elementCode = String.fromCharCodes(elementList);
+          //
+          //   unfilteredQuickHash16.write(String.fromCharCodes(elementList, 0, 16));
+          //
+          //   for (int element in elementList) {
+          //     // print('*** element: $element');
+          //     // print('^^^ char:    ${String.fromCharCode(element)}');
+          //
+          //     var elementChar = String.fromCharCode(element);
+          //     // print('elementChar.length: ${elementChar.length}');
+          //
+          //     unfilteredQuickHash.write(String.fromCharCode(element));
+          //
+          //     if (filterCodeUnits.contains(element)) {
+          //       // print('!!!!!!!!!! passed filter !!!!!!!!!!');
+          //       filteredQuickHash.write(String.fromCharCode(element));
+          //       // print(String.fromCharCode(element));
+          //       // sleep(Duration(milliseconds: 5));
+          //     }
+          //   }
+          // }
 
           print('\n\n#### ----------- ####');
           print('\n\nunfilteredQuickHash16: $unfilteredQuickHash16');
@@ -183,20 +213,20 @@ void main() {
 
           print('\n\n123456789.codeUnits => $filterCodeUnits');
 
-          for (List<int> codeList in lineStreamList) {
-            print('\n\ncodeList: $codeList\n\n');
-            print('\n\ncodeList.length: ${codeList.length}\n\n');
-
-            print('\n\n************* unfiltered characters: ${String.fromCharCodes(codeList)}\n\n');
-
-            List<int> filteredCodeList = codeList.where((code) => filterCodeUnits.contains(code)).toList();
-            print('filtered:\n');
-            print('\n\nfilteredCodeList: $filteredCodeList\n\n');
-            print('\n\nfilteredCodeList.length: ${filteredCodeList.length}\n\n');
-
-            print('------------ filtered characters:\n');
-            print('\n\nfilteredCodeList: ${String.fromCharCodes(filteredCodeList)}\n\n');
-          }
+          // for (List<int> codeList in lineStreamList) {
+          //   print('\n\ncodeList: $codeList\n\n');
+          //   print('\n\ncodeList.length: ${codeList.length}\n\n');
+          //
+          //   print('\n\n************* unfiltered characters: ${String.fromCharCodes(codeList)}\n\n');
+          //
+          //   List<int> filteredCodeList = codeList.where((code) => filterCodeUnits.contains(code)).toList();
+          //   print('filtered:\n');
+          //   print('\n\nfilteredCodeList: $filteredCodeList\n\n');
+          //   print('\n\nfilteredCodeList.length: ${filteredCodeList.length}\n\n');
+          //
+          //   print('------------ filtered characters:\n');
+          //   print('\n\nfilteredCodeList: ${String.fromCharCodes(filteredCodeList)}\n\n');
+          // }
 
 
 
@@ -274,7 +304,7 @@ void main() {
           print('*****');
 
 
-          expect(lineStreamQuickHashBuffer.toString().contains(KnownGood.easySolvedPuzzleQuickHash), true);
+          // expect(lineStreamQuickHashBuffer.toString().contains(KnownGood.easySolvedPuzzleQuickHash), true);
 
         });
       });
@@ -347,6 +377,32 @@ void main() {
       });
     });
   });
+}
+
+String filterForSolutions (String input) {
+  var splitString = input.split('');
+  print('## splitString: $splitString');
+  var filteredStringBuffer = StringBuffer();
+  List solutions = ['1','2','3','4','5','6','7','8','9'];
+  bool reject = false;
+  for (final char in splitString) {
+    if (char == 'H') {
+      stdout.write('reject off-');
+      reject = false;
+      continue;
+    }
+    if (char == '[') {
+      stdout.write('reject on-');
+      reject = true;
+      continue;
+    }
+    if (reject == false && solutions.contains(char)) {
+    // if (reject == false) {
+      stdout.write('keeping $char ');
+      filteredStringBuffer.write(char);
+    }
+  }
+  return filteredStringBuffer.toString();
 }
 
 Iterable<RegExpMatch> filterOutNonNumbers({required inputString}) {
