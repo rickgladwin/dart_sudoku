@@ -1,8 +1,8 @@
 // handles use cases for SheetNode
 
 import 'package:dart_sudoku/src/core/validation_result.dart';
+import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 
-import '../entities/sheet_node.dart';
 
 class SheetNodeHandler {
   final SheetNode sheetNode;

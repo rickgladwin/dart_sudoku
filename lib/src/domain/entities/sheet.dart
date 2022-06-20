@@ -22,23 +22,16 @@ class Sheet {
   }
 
   List<List<SheetNode>> getColumns() {
-    // print("getting columns...");
-    // print("rows are: $rows");
-
     // build a null 9x9 array
     List<List<SheetNode>> columnData = [];
     for (var i = 0; i < 9; i++) {
       var columnNull = [for (var i = 0; i < 9; i++) SheetNode({})];
       columnData.add(columnNull);
     }
-    // print("columnData initialized:");
-    // print("$columnData");
 
     // fill the array using a nested loop over rows (invert Sheet.rows)
     for (var i = 0; i < 9; i++) {
-      // print("i = $i");
       for (var j = 0; j < 9; j++) {
-        // print("j = $j");
         columnData[i][j] = rows[j][i];
       }
     }
@@ -52,7 +45,6 @@ class SheetInitializer {
   // columns is the result of a function that iterates over all rows
   //  and gets the SheetNode at an index in each row, building a
   //  new list of lists of SheetNodes (rows, rotated 90º)
-  // List<SheetNode> columns;
 
   SheetInitializer({List<List<SheetNode?>>? rowData}) {
     if (rowData == null) {

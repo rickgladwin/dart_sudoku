@@ -9,8 +9,6 @@ import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 class SheetImporter {
 
   late String puzzleData;
-  // String importDataPath = '../../../import_data/';
-  // String importDataPath = '/Users/rickgladwin/Code/dart_sudoku/import_data/';
   String importDataPath = 'import_data/';
 
   Future<ValidationResult> validate ({required String dataFile}) async {
@@ -47,12 +45,8 @@ class SheetImporter {
   }
 
   Future<void> importFileContent ({required fileName}) async {
-    // print('importing...');
     var puzzleFile = File(importDataPath + fileName);
-    // print('puzzleFile: $puzzleFile');
     puzzleData = await puzzleFile.readAsString();
-    // print('%% puzzleData %%');
-    // print(puzzleData);
   }
 
   void cleanSDKFileData ({required String sdkFileData}) {
@@ -64,21 +58,17 @@ class SheetImporter {
   Sheet buildSheet({required String puzzleData}) {
     // build initializer data from puzzle data
     final charCodes = puzzleData.codeUnits;
-    // print('%% charCodes %%');
-    // print(charCodes);
 
     late List<List<SheetNode>> initializerData = [[],[],[],[],[],[],[],[],[]];
 
     var puzzleDataIndex = 0;
     late SheetNode currentNode;
-    late dynamic currentCharCode;
     late String currentChar;
 
     for (var i = 0; i < 9; i++) {
       for (var j = 0; j < 10; j++) {
         if (j != 9) {
           currentChar = String.fromCharCode(charCodes[puzzleDataIndex]);
-          // print('## currentChar: $currentChar');
           currentNode = currentChar == '.' ? SheetNode() : SheetNode({int.parse(currentChar)});
           initializerData[i].add(currentNode);
         }
@@ -92,6 +82,7 @@ class SheetImporter {
 
   Future<Sheet> importToSheet({required String fileName}) async {
     await importFileContent(fileName: fileName);
+
     // validate
     var fileIsValidResult = await validate(dataFile: fileName);
     if (fileIsValidResult.status == false) {
@@ -105,10 +96,4 @@ class SheetImporter {
     // build
     return buildSheet(puzzleData: puzzleData);
   }
-}
-
-
-Future<void> main() async {
-  await SheetImporter().importFileContent(fileName: 'sudoku_easy_1.sdk');
-  print('*** done ***');
 }

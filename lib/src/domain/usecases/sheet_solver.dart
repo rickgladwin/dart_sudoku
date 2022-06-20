@@ -151,73 +151,31 @@ class SheetSolver {
   }
 
   Future<SheetSolveResult> solve () async {
-    // sheet = inputSheet;
 
-    // var sheetSolver = SheetSolver(sheet);
-    // sheetSolver.findSolvedNodes();
-    // print('waiting 2 seconds...');
-    // sleep(Duration(milliseconds: 2000));
     var result = await solveBasic();
 
-    var sheetPresenter = SheetPresenter();
+    // var sheetPresenter = SheetPresenter();
 
     if (result.finalStatus != FinalStatus.solved) {
-      print('basic methods could not complete the solution. Continuing with recursion...');
       var sheetHandler = SheetHandler(result.finalSheet);
 
-      // sheetSolver.partialSheet = result.finalSheet;
       partialSheet = sheetHandler.clone();
       solveWithRecursion();
-      print('attempted solution WITH recursion:');
       result.finalStatus = solvedNodes.length == 81 ? FinalStatus.solved : FinalStatus.unsolvable;
       result.finalSheet = sheet;
 
-      sheetPresenter.writeSheet(result.finalSheet);
-      print(sheetPresenter.canvas);
-    } else {
-      print('solved without recursion:');
-      sheetPresenter.writeSheet(result.finalSheet);
-      print(sheetPresenter.canvas);
     }
 
     return result;
-
-
-    // result.finalSheet = sheetSolver.sheet;
-
-    print('done');
-    // print(result.finalStatus);
-    // print('---');
-    // sheetPresenter.writeSheet(result.finalSheet);
-    // print(sheetPresenter.canvas);
-
   }
 
   Future<SheetSolveResult> solveBasic() async {
-    // sheet = inputSheet;
     var result = SheetSolveResult();
     result.finalStatus = FinalStatus.unsolved;
 
     var sheetPresenter = SheetPresenter();
-    // sheetPresenter.writeSheet(sheet);
-    // print('%% solving sheet:');
-    // print(sheetPresenter.canvas);
 
-    // for (var solvedNodeElement in solvedNodes) {
-    //   print('** before: ${solvedNodeElement.solvedNode.solutions}');
-    // }
-
-    // update solvedNodes and quickHash set
     updateSolvedNodesAndQuickHash();
-
-    // print('\nquickHash init:');
-    // print(quickHash);
-
-    // print('BEFORE solvedNodes.length: ${solvedNodes.length}');
-
-    // for (var solvedNodeElement in solvedNodes) {
-    //   print('** after: ${solvedNodeElement.solvedNode.solutions}');
-    // }
 
     //  if there are no solved nodes, return unsolvable
     if (solvedNodes.isEmpty) {
@@ -225,11 +183,6 @@ class SheetSolver {
       result.finalSheet = sheet;
       return result;
     }
-
-    // Sheet sheetBefore = sheet;
-    // late Sheet sheetAfter;
-
-    // var sheetHandler = SheetHandler(sheet);
 
     int solvedNodesCountBefore;
     int solvedNodesCountAfter;
@@ -240,33 +193,16 @@ class SheetSolver {
 
     sheetPresenter = SheetPresenter();
 
-
     // loop until no updates:
     do {
-      // findSolvedNodes();
-      // update solvedNodes and quickHash set
       updateSolvedNodesAndQuickHash();
 
       // remember solutions count before updates
       solvedNodesCountBefore = solvedNodes.length;
       quickHashBefore = quickHash.toString();
 
-      // print('\nquickHash before:');
-      // print(quickHash);
-
-
-
-      // print('-- solvedNodesCountBefore: $solvedNodesCountBefore');
-
-      // print('solvedNodes.first.solvedNode.solutions: ${solvedNodes.first.solvedNode.solutions}');
-
-      // for (var solvedNodeElement in solvedNodes) {
-      //   print('** ${solvedNodeElement.solvedNode.solutions}');
-      // }
-
       for (var solvedNodeElement in solvedNodes) {
         if (solvedNodeElement.solvedNode.solutions.isNotEmpty) {
-          // print('@ removing for ${solvedNodeElement.solvedNode.solutions.first} at ${solvedNodeElement.solvedNodeCoords['x']}, ${solvedNodeElement.solvedNodeCoords['y']}');
           removeSolutions(
               solution: solvedNodeElement.solvedNode.solutions.first,
               exceptX: solvedNodeElement.solvedNodeCoords['x'] as int,
@@ -275,69 +211,17 @@ class SheetSolver {
         }
       }
 
-      // updateSolvedNodesAndQuickHash();
-      // quickHashAfter = quickHash.toString();
-
-      // sleep(Duration(milliseconds: 10));
-
-      // sheetPresenter.writeSheet(sheet);
-      // print('*** sheet after remove ***');
-      // print(sheetPresenter.canvas);
-
-      // print('%%% quickHashBefore: $quickHashBefore');
-      // print('%%%  quickHashAfter: $quickHashAfter');
-      // print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
-      // print('&&& total rounds: $rounds');
-
-
       promoteSolutions();
-
-      // sleep(Duration(milliseconds: 10));
 
       updateSolvedNodesAndQuickHash();
 
-      // print('\nquickHash after:');
-      // print(quickHash);
-
       solvedNodesCountAfter = solvedNodes.length;
       quickHashAfter = quickHash.toString();
-      // print('-- solvedNodesCountAfter: $solvedNodesCountAfter');
-
-      // var sheetPresenter = SheetPresenter();
       sheetPresenter.writeSheet(sheet);
-      print('*** sheet after round ***');
-      print(sheetPresenter.canvas);
-
-      print('%%% quickHashBefore: $quickHashBefore');
-      print('%%%  quickHashAfter: $quickHashAfter');
-      // print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
 
       ++rounds;
-      print('&&& total rounds: $rounds');
-
-      // sheetHandler.sheet = sheet;
-      
-      print('&&& solvedNodesCountBefore vs solvedNodesCountAfter: $solvedNodesCountBefore vs $solvedNodesCountAfter');
-      print('&&& solvedNodesCountBefore != solvedNodesCountAfter: ${solvedNodesCountBefore != solvedNodesCountAfter}');
-
-      // print('%%% quickHashBefore: $quickHashBefore');
-      // print('%%%  quickHashAfter: $quickHashAfter');
-      print('%%% quickHashBefore != quickHashAfter: ${quickHashBefore != quickHashAfter}');
-      // print('&&& total rounds: $rounds');
-
-
-      // removeSolutions should update sheetSolver.sheet (same sheet as sheetHandler.sheet)
-    // } while (!sheetHandler.sheetEquals(sheetBefore));
 
     } while (quickHashBefore != quickHashAfter);
-    // } while (rounds < 100);
-
-    //  reset updates this loop
-    //  for each solved node
-    //    remove competing solutions
-    // if sheet is solved, return solved
-    // else return unsolvable
-
 
     if (solvedNodes.length == 81) {
       result.finalStatus = FinalStatus.solved;
@@ -350,52 +234,25 @@ class SheetSolver {
     return result;
   }
 
-  // SheetSolveResult solveWithRecursion ({required Sheet inputSheet}) {
-  void solveWithRecursion () {
 
-    // var sheetPresenter = SheetPresenter();
-    // sheetPresenter.writeSheet(sheet);
-    // print(sheetPresenter.canvas);
+  void solveWithRecursion () {
 
     partialSheet ??= SheetHandler(sheet).clone();
 
-    // print('##### sheet: ####');
-    // var sheetPresenter = SheetPresenter();
-    // sheetPresenter.writeSheet(partialSheet);
-    // sheetPresenter.writeSheet(sheet);
-    // print(sheetPresenter.canvas);
-
-    // sleep(Duration(milliseconds: 100));
-    // var input = stdin.readLineSync();
-
-
-    // sheet = inputSheet;
-    // var result = SheetSolveResult();
-
     for (var i = 0; i < 9; i++) {
       for (var j = 0; j < 9; j++) {
-        // sleep(Duration(milliseconds: 10));
-        // var node = sheet.rows[i][j];
         // if node is unsolved
         if (sheet.rows[i][j].solutions.length != 1) {
           // try all values here
           for (var value in sheet.rows[i][j].solutions) {
-            // print('trying  $value at $j,$i');
             if (valueFits(value: value, row: i, col: j)) {
-              // print('setting $value at $j,$i');
               sheet.rows[i][j].solutions = {value};
               solveWithRecursion();
-              //  i.e. did this last call return because it couldn't find a solution or because
-              //  it solved the sheet?
               updateSolvedNodesAndQuickHash();
               var sheetHandler = SheetHandler(sheet);
               if (!sheetHandler.isSolved()) {
-                // print('resetting         $j,$i');
-                // print('with ${partialSheet.rows[i][j].solutions}');
                 sheet.rows[i][j].solutions = partialSheet!.rows[i][j].solutions;
               }
-              // print('resetting         $j,$i');
-              // sheet.rows[i][j].solutions = {1,2,3,4,5,6,7,8,9};
             }
           }
           // reached end of value options for this node.
@@ -404,15 +261,6 @@ class SheetSolver {
         }
       }
     }
-    print('############## all nodes checked ###############');
-    // result.finalStatus = FinalStatus.solved;
-    // result.finalSheet = sheet;
-
-    // return result;
-    var sheetPresenter = SheetPresenter();
-    // sheetPresenter = SheetPresenter();
-    sheetPresenter.writeSheet(sheet);
-    print(sheetPresenter.canvas);
 
     updateSolvedNodesAndQuickHash();
 
@@ -421,51 +269,43 @@ class SheetSolver {
 
   bool valueFits ({required int value, required int row, required int col}) {
     // no matching values in row
-    // if (valueInRow(value: value, row: row, exceptCol: col)) return false;
     if (valueInRow(value: value, row: row)) {
-      // print('valueFits returning false');
+
       return false;
     }
     // no matching values in col
-    // if (valueInCol(value: value, col: col, exceptRow: row)) return false;
     if (valueInCol(value: value, col: col)) {
-      // print('valueFits returning false');
 
       return false;
     }
     // no matching values in sector
     if (valueInSector(value: value, nodeRow: row, nodeCol: col)) {
-      // print('valueFits returning false');
 
       return false;
     }
 
-    // print('%% valueFits: $value at row: $row, col: $col');
-
     return true;
   }
 
-  // bool valueInRow ({required int value, required int row, required int exceptCol}) {
   bool valueInRow ({required int value, required int row}) {
     for (var col = 0; col < 9; col++) {
       if (setEquals(sheet.rows[row][col].solutions, {value})) {
-        // print('value $value failed for row $row, col $col');
+
         return true;
       }
     }
-    // print('value $value PASSED for row $row');
+
     return false;
   }
 
-  // bool valueInCol ({required int value, required int col, required int exceptRow}) {
   bool valueInCol ({required int value, required int col}) {
     for (var row = 0; row < 9; row++) {
       if (setEquals(sheet.rows[row][col].solutions, {value})) {
-        // print('value $value failed for row $row, col $col');
+
         return true;
       }
     }
-    // print('value $value PASSED for col $col');
+
     return false;
   }
 
@@ -477,12 +317,12 @@ class SheetSolver {
       for (var col = sectorCol; col < sectorCol + 3; col++) {
 
         if (setEquals(sheet.rows[row][col].solutions, {value})) {
-          // print('value $value failed for row $row, col $col');
+
           return true;
         }
       }
     }
-    // print('value $value PASSED for sector at sectorRow $sectorRow, sectorCol $sectorCol');
+
     return false;
   }
 }

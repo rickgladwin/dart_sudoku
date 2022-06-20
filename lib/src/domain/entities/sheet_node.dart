@@ -1,9 +1,6 @@
 // 9 x 9 SheetNodes represents a Sudoku Sheet
-// holds the data about the possible solutions at its current
-//  position on the Sheet, (and its solved/unsolved status? Or is that
-//  up to an interpreter? Do we make the SheetNode responsible for what its
-//  own data MEANS, or is it just responsible for holding the data and
-//  structure? Maybe that's the responsibility of usecases.)
+// holds the data about the possible solutions at its
+// position on the Sheet
 
 class SheetNode {
   late Set<int> solutions;
