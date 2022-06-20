@@ -359,6 +359,8 @@ void main() {
   });
 }
 
+/// filters out control codes (/\[.*H/), then filters
+/// in [1-9] from a string.
 String filterForSolutions (String input) {
   var splitString = input.split('');
   print('## splitString: $splitString');
