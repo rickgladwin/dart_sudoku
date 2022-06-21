@@ -1,3 +1,7 @@
 ## 1.0.0
+### Notes
+- Initial release
 
-- Initial version.
+## 0.1
+### Notes
+- pre-release version

@@ -393,8 +393,6 @@ Future<void> main() async {
 
   var result = await sheetSolver.solve();
 
-  // TODO: clean up the code
-
   // TODO: publish this as a Dart package so it can be imported into Flutter
 
   // TODO: build the Flutter app around this core
