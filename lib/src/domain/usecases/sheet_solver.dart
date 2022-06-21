@@ -400,7 +400,6 @@ Future<void> main() async {
   sheetPresenter.writeSheet(result.finalSheet);
   print(sheetPresenter.canvas);
 
-
   print('done');
 }
 

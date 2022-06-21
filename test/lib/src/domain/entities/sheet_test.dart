@@ -3,7 +3,7 @@
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:test/test.dart';
-// import 'dart:io';
+
 
 void main() {
   group('Sheet', () {
@@ -100,23 +100,7 @@ void main() {
         }
       }
 
-      // for (var i = 0; i < 9; i++) {
-      //   print("rowsData row $i");
-      //   for (var j = 0; j < 9; j++) {
-      //     stdout.write("${rowsData[i][j]},");
-      //   }
-      //   print("");
-      // }
-
       var sheetInitializer = SheetInitializer(rowData: rowsData);
-
-      // for (var i = 0; i < 9; i++) {
-      //   print("initializer row $i");
-      //   for (var j = 0; j < 9; j++) {
-      //     stdout.write("${sheetInitializer.rows[i][j]},");
-      //   }
-      //   print("");
-      // }
 
       for (var i = 0; i < sheetInitializer.rows.length; i++) {
         for (var j = 0; j < sheetInitializer.rows[i].length; j++) {

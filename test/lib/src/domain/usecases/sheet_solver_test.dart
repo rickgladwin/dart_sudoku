@@ -1,5 +1,3 @@
-// import 'dart:io';
-
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_node.dart';
 import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
@@ -105,10 +103,6 @@ main() {
 
       sheetSolver.removeSolutionsFromRow(solution: 3, exceptX: solvedNodeX, exceptY: solvedNodeY);
 
-      // var sheetPresenter = SheetPresenter();
-      // sheetPresenter.writeSheet(sheet);
-      // sheetPresenter.printCanvas();
-
       for (var i = 0; i < 9; i++) {
         if (i != solvedNodeX - 1) {
           expect(sheet.rows[solvedNodeY - 1][i].solutions, defaultMinusSolved);
@@ -178,10 +172,6 @@ main() {
       var sheetSolver = SheetSolver(sheet);
 
       sheetSolver.removeSolutionsFromCol(solution: 3, exceptX: solvedNodeX, exceptY: solvedNodeY);
-
-      // var sheetPresenter = SheetPresenter();
-      // sheetPresenter.writeSheet(sheet);
-      // sheetPresenter.printCanvas();
 
       for (var i = 0; i < 9; i++) {
         for (var j = 0; j < 9; j++) {
@@ -319,10 +309,6 @@ main() {
 
       sheetSolver.removeSolutionsFromSector(solution: 3, nodeX: solvedNodeX, nodeY: solvedNodeY);
 
-      // var sheetPresenter = SheetPresenter();
-      // sheetPresenter.writeSheet(sheet);
-      // sheetPresenter.printCanvas();
-
       // affected sector should have top left coordinate 4,4 (node array coordinate [3][3])
       // since solved node at 4,6 belongs to sector at 4,4
       for (var i = 3; i <= 5; i++) {
@@ -394,10 +380,6 @@ main() {
         [{9},     {6},     {4,5,8}],
         [{1,5,8}, {1,8},   {3}    ],
       ];
-
-      // var sheetPresenter = SheetPresenter();
-      // sheetPresenter.writeSheet(sheet);
-      // sheetPresenter.printCanvas();
 
       // affected sector should have top left coordinate 4,4 (node array coordinate [3][3])
       // since solved node at 4,6 belongs to sector at 4,4
@@ -568,9 +550,6 @@ main() {
       var sheetSolver = SheetSolver(sheet);
 
       sheetSolver.removeSolutions(solution: 3, exceptX: solvedNodeX, exceptY: solvedNodeY);
-      // var sheetPresenter = SheetPresenter();
-      // sheetPresenter.writeSheet(sheet);
-      // sheetPresenter.printCanvas();
 
       // expect solution absent from row
       for (var i = 0; i < 9; i++) {

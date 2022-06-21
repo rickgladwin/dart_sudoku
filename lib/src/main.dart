@@ -2,13 +2,11 @@
 
 
 import 'dart:io';
-
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:dart_sudoku/src/domain/usecases/sheet_solver.dart';
 import 'package:dart_sudoku/src/interaction/sheet_importer.dart';
 import 'package:dart_sudoku/src/service/presenters/sheet_presenter.dart';
-
-import 'domain/entities/sheet_solve_result.dart';
+import 'package:dart_sudoku/src/domain/entities/sheet_solve_result.dart';
 
 Future<void> main(List<String> args) async {
   String puzzleFile = 'sudoku_easy_1.sdk';

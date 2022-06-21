@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dart_sudoku/src/domain/entities/sheet.dart';
 import 'package:ansi_escapes/ansi_escapes.dart';
 import 'package:dart_sudoku/src/service/presenters/sheet_node_presenter.dart';
@@ -122,106 +121,7 @@ class SheetPresenter {
       }
     }
   }
-
-  // void printCanvas () => print(canvas);
-
 }
-
-// void writeSheet(Sheet sheet) {
-//   printSheetBorders();
-//   var sheetNodePresenter = SheetNodePresenter();
-//
-//   // for each SheetNode in Sheet, print the SheetNode on the canvas
-//   for (var i = 0; i < 9; i++) {
-//     for (var j = 0; j < 9; j++) {
-//       sheetNodePresenter.writeSheetNode(sheetNode: sheet.rows[i][j], x: j*3+j+1, y: i*3+i+1);
-//     }
-//   }
-//
-//   printCanvasInfo(sheet);
-// }
-
-// void printCanvasInfo(sheet) {
-//   stdout.write(sheet.rows[0][0].solutions);
-//   stdout.write('\n');
-//   print('terminal rows: ${stdout.terminalLines}');
-//   print('terminal columns: ${stdout.terminalColumns}');
-//   print(sheet);
-//   print('done');
-// }
-
-// void printSheetBorders() {
-//   stdout.write(ansiEscapes.clearScreen);
-//   // print top border
-//   stdout.write('${Char.tl2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v2}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.t2v1}${Char.h2}${Char.h2}${Char.h2}${Char.tr2}\n');
-//
-//   // print rows
-//   for (var row = 1; row < 36; row++) {
-//
-//     late final String leftVert;
-//     late final String rightVert;
-//     late final String horizLine;
-//     late final String horizNodeCross;
-//     late final String horizSectorCross;
-//
-//     // line rows
-//     if (isLineRow(row)) {
-//       // sector divider rows characters
-//       if (isSectorBorderRow(row)) {
-//         leftVert = Char.l2h2;
-//         rightVert = Char.r2h2;
-//         horizLine = Char.h2;
-//         horizNodeCross = Char.c2v1;
-//         horizSectorCross = Char.c2;
-//       // node divider rows characters
-//       } else {
-//         leftVert = Char.l2h1;
-//         rightVert = Char.r2h1;
-//         horizLine = Char.h1;
-//         horizNodeCross = Char.c1;
-//         horizSectorCross = Char.c2h1;
-//       }
-//
-//       // print line row
-//       stdout.write(leftVert);
-//       for (var col = 1; col < 36; col++) {
-//         isSectorBorderCol(col) ?
-//           stdout.write(horizSectorCross) :
-//           isLineCol(col) ?
-//             stdout.write(horizNodeCross) :
-//             stdout.write(horizLine);
-//       }
-//       stdout.write(rightVert);
-//       // stdout.write('\n');
-//
-//     } else {
-//       leftVert = Char.v2;
-//       rightVert = Char.v2;
-//       late String vertLine;
-//
-//       stdout.write(leftVert);
-//       // line columns
-//       for (var col = 1; col < 36; col++) {
-//         if (isLineCol(col)) {
-//           if (isSectorBorderCol(col)) {
-//             vertLine = Char.v2;
-//           } else {
-//             vertLine = Char.v1;
-//           }
-//         } else {
-//           vertLine = '•';
-//         }
-//         stdout.write(vertLine);
-//       }
-//       stdout.write(rightVert);
-//     }
-//     // the \n character makes stdout print its buffer and then a new line
-//     stdout.write('\n');
-//   }
-//
-//   // print bottom border
-//   stdout.write('${Char.bl2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v2}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.b2v1}${Char.h2}${Char.h2}${Char.h2}${Char.br2}\n');
-// }
 
 bool isLineRow(int row) {
   // total rows (within top and bottom borders):  37
@@ -244,19 +144,3 @@ bool isSectorBorderCol(int col) {
   // every 12th col (every 3rd border col) is a sector border
   return col % 12 == 0;
 }
-
-
-// void main() {
-//   var sheetInitializer = SheetInitializer();
-//   var sheet = Sheet(sheetInitializer);
-//   var canvas = StringBuffer();
-//
-//   var sheetPresenter = SheetPresenter(canvas);
-//
-//   sheetPresenter.writeSheet(sheet);
-//   sheetPresenter.printCanvas();
-//
-//   print('\ncodeUnits:\n');
-//
-//   print(sheetPresenter.canvas.toString().codeUnits);
-// }
