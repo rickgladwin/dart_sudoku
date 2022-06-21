@@ -6,7 +6,7 @@ Uses basic elimination methods until a solution is found or these methods
 no longer yield changes, then applies brute force recursion to the remaining
 puzzle if it is unsolved.
 
-![coverage: 92.4%](https://img.shields.io/badge/coverage-92.4%25-green) ![version: 0.1](https://img.shields.io/badge/version-0.1-blue)
+![coverage: 93.5%](https://img.shields.io/badge/coverage-93.5%25-green) ![version: 0.1](https://img.shields.io/badge/version-0.1-blue)
 
 ## Architecture
 
