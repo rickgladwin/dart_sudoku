@@ -11,8 +11,7 @@
 - Initial release
 ### Added
 - The rest of the f%@king owl
-![how to draw an owl](documents/how_to_draw_an_owl.png)
-
+![how to draw an owl](https://raw.githubusercontent.com/rickgladwin/dart_sudoku/8afa422c1f792c1b728ff415a833c72b5ca7646e/documents/how_to_draw_an_owl.png)
 
 ## 0.1 [2022-05-10]
 ### Notes

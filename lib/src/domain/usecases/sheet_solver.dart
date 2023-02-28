@@ -184,12 +184,12 @@ class SheetSolver {
       return result;
     }
 
-    int solvedNodesCountBefore;
-    int solvedNodesCountAfter;
+    // int solvedNodesCountBefore;
+    // int solvedNodesCountAfter;
     String quickHashBefore;
     String quickHashAfter;
 
-    var rounds = 0;
+    // var rounds = 0;
 
     sheetPresenter = SheetPresenter();
 
@@ -198,7 +198,7 @@ class SheetSolver {
       updateSolvedNodesAndQuickHash();
 
       // remember solutions count before updates
-      solvedNodesCountBefore = solvedNodes.length;
+      // solvedNodesCountBefore = solvedNodes.length;
       quickHashBefore = quickHash.toString();
 
       for (var solvedNodeElement in solvedNodes) {
@@ -215,11 +215,11 @@ class SheetSolver {
 
       updateSolvedNodesAndQuickHash();
 
-      solvedNodesCountAfter = solvedNodes.length;
+      // solvedNodesCountAfter = solvedNodes.length;
       quickHashAfter = quickHash.toString();
       sheetPresenter.writeSheet(sheet);
 
-      ++rounds;
+      // ++rounds;
 
     } while (quickHashBefore != quickHashAfter);
 
