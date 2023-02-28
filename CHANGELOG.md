@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2 [2023-02-28]
+### Notes
+- make image link in Changelog an absolute permalink (fixes broken image in published package docs)
+### Changed
+- `CHANGELOG.md` "how to draw an owl" link
+
 ## 1.0.1 [2023-02-27]
 ### Notes
 - modified for publishing as a Dart package

@@ -1,5 +1,5 @@
 name: dart_sudoku
-version: 1.0.1
+version: 1.0.2
 publish_to: https://onepub.dev/api/zohnoflygz/
 description: A simple Dart package or command-line application for solving Sudoku puzzles.
 repository: https://github.com/rickgladwin/dart_sudoku
