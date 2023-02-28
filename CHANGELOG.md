@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 [2023-02-27]
+### Notes
+- modified for publishing as a Dart package
+### Added
+- `lib/dart_sudoku.dart`
+
 ## 1.0.0 [2022-06-21]
 ### Notes
 - Initial release

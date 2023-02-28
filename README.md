@@ -67,6 +67,10 @@ On the command line, run:
 
 `dart lib/src/domain/usecases/sheet_solver.dart`
 
+OR
+
+If importing as a package, see `lib/dart_sudoku.dart` for the libraries exported on the public API.
+
 ## Test
 
 ### run all tests:

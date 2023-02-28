@@ -1,6 +1,6 @@
 name: dart_sudoku
-description: A simple command-line Dart application for solving Sudoku puzzles.
-version: 1.0.0
+description: A simple Dart package or command-line application for solving Sudoku puzzles.
+version: 1.0.1
 # homepage: https://www.example.com
 
 environment:
